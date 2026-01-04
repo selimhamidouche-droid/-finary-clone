@@ -25,7 +25,11 @@ import os
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-ag2tyxa_4$@d25t_x19#rmzh#g&ebvmz2wzdr(w30(_3m+5=fm')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# Automatically detect if running on Render
+if 'RENDER' in os.environ:
+    DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = ['*'] # In production, restrict this to your domain
 
