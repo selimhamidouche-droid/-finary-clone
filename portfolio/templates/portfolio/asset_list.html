@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold leading-tight text-white">Actifs Disponibles</h1>
+        <a href="{% url 'portfolio:asset_search' %}"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+            + Ajouter Actif
+        </a>
+    </div>
+
+    <div class="bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-700">
+            <thead class="bg-gray-750">
+                <tr>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Ticker
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Nom
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Catégorie
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Prix
+                    </th>
+                    <th scope="col"
+                        class="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Dernière Mise à Jour
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-gray-800 divide-y divide-gray-700">
+                {% for asset in assets %}
+                <tr class="hover:bg-gray-750 transition duration-150">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-400">
+                        {{ asset.ticker }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                        {{ asset.name }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        <span
+                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        {% if asset.category == 'STOCKS' %}bg-blue-900 text-blue-200{% elif asset.category == 'CRYPTO' %}bg-yellow-900 text-yellow-200{% else %}bg-gray-700 text-gray-200{% endif %}">
+                            {{ asset.category }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-right">
+                        {{ asset.current_price|floatformat:2 }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
+                        {{ asset.last_updated|date:"Y-m-d H:i" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                        Aucun actif trouvé dans la base de données.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

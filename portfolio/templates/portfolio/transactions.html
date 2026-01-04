@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    <div class="flex justify-between items-start">
+        <div>
+            <h1 class="text-3xl font-bold text-white">Transactions</h1>
+            <p class="text-gray-400 mt-2">Historique et Webhook (automatisations).</p>
+        </div>
+        <button onclick="document.getElementById('addTransactionModal').classList.remove('hidden')"
+            class="bg-gold hover:bg-yellow-400 text-black px-4 py-2 rounded-xl font-bold transition-colors shadow-lg shadow-gold/10">
+            + Ajouter
+        </button>
+    </div>
+
+    <!-- Webhook Info Box -->
+    <div class="bg-dark-800 rounded-2xl p-6 border border-gray-800 shadow-xl">
+        <h3 class="text-white font-bold mb-2 flex items-center gap-2">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+                </path>
+            </svg>
+            Automatisation (n8n / Raccourcis iOS)
+        </h3>
+        <p class="text-gray-400 text-sm mb-4">Envoyez des requêtes POST à cette URL pour ajouter des transactions
+            automatiquement:</p>
+        <div class="bg-[#050505] p-4 rounded-lg border border-gray-800 group relative">
+            <code
+                class="text-green-400 text-xs font-mono block mb-2 break-all">https://{{ request.get_host }}/api/webhook/transaction/</code>
+            <p class="text-gray-500 text-xs font-mono">Payload JSON requis:</p>
+            <pre class="text-gray-400 text-xs font-mono mt-1 overflow-x-auto">
+{
+  "secret": "my-secret-key-123",
+  "amount": 25.50,
+  "merchant": "McDonalds",
+  "card": "Visa",
+  "date": "2026-01-04"
+}</pre>
+        </div>
+    </div>
+
+    <div class="bg-dark-800 rounded-2xl border border-gray-800 shadow-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-800">
+                <thead class="bg-dark-900/50">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type
+                        </th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Catégorie</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Description</th>
+                        <th class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Montant</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800/50">
+                    {% for t in transactions %}
+                    <tr class="hover:bg-gray-800/50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ t.date|date:"d M Y" }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                {% if t.type == 'INCOME' or t.type == 'DEPOSIT' %}bg-green-900/30 text-green-400{% else %}bg-orange-900/30 text-orange-400{% endif %}">
+                                {{ t.get_type_display }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ t.category }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ t.description }}</td>
+                        <td
+                            class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold {% if t.type == 'INCOME' or t.type == 'DEPOSIT' %}text-green-400{% else %}text-white{% endif %}">
+                            {{ t.amount }} €
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-500 text-sm">
+                            <div class="flex flex-col items-center justify-center">
+                                <svg class="w-12 h-12 text-gray-700 mb-4" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                                    </path>
+                                </svg>
+                                Aucune transaction pour le moment.
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="addTransactionModal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div onclick="event.stopPropagation()"
+        class="bg-dark-800 p-8 rounded-2xl w-full max-w-md border border-gray-700 shadow-2xl relative animate-fade-in">
+        <button onclick="document.getElementById('addTransactionModal').classList.add('hidden')"
+            class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <h2 class="text-xl font-bold text-white mb-6">Nouvelle Transaction</h2>
+        <form action="{% url 'portfolio:transaction_create' %}" method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1">Montant (€)</label>
+                <input type="number" step="0.01" name="amount" required
+                    class="w-full bg-dark-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-gold transition-colors text-lg font-bold">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Type</label>
+                    <select name="type"
+                        class="w-full bg-dark-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-gold focus:outline-none text-sm h-[42px]">
+                        <option value="EXPENSE">Dépense</option>
+                        <option value="INCOME">Revenu</option>
+                        <option value="DEPOSIT">Dépôt</option>
+                        <option value="WITHDRAWAL">Retrait</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Date</label>
+                    <input type="date" name="date"
+                        class="w-full bg-dark-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-gold focus:outline-none text-sm h-[42px]">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1">Catégorie</label>
+                <input type="text" name="category" placeholder="ex: Alimentation"
+                    class="w-full bg-dark-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-gold focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-1">Description</label>
+                <input type="text" name="description" placeholder="Optionnel"
+                    class="w-full bg-dark-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-gold focus:outline-none">
+            </div>
+            <button type="submit"
+                class="w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-xl transition-colors mt-6 shadow-lg shadow-gold/20">Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Close modal on click outside
+    document.getElementById('addTransactionModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            this.classList.add('hidden');
+        }
+    });
+</script>
+{% endblock %}

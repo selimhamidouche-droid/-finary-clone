@@ -1,0 +1,50 @@
+{% if results %}
+<div class="space-y-4 mt-8">
+    <h3 class="text-lg font-medium text-gray-300">Résultats pour "{{ query }}"</h3>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {% for result in results %}
+        <div
+            class="bg-gray-800 rounded-lg p-4 flex items-center justify-between shadow hover:bg-gray-750 transition border border-gray-700">
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center space-x-3">
+                    <p class="text-lg font-medium text-indigo-400 truncate">
+                        {{ result.ticker }}
+                    </p>
+                    <span
+                        class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
+                        {% if result.category == 'STOCKS' %}bg-blue-900 text-blue-200{% else %}bg-yellow-900 text-yellow-200{% endif %}">
+                        {{ result.category }}
+                    </span>
+                </div>
+                <p class="text-sm text-gray-400 truncate mt-1">
+                    {{ result.name }}
+                </p>
+            </div>
+
+            <div class="ml-4 flex-shrink-0">
+                {% if result.exists %}
+                <span
+                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-green-900 text-green-200 cursor-default">
+                    ✓ Déjà ajouté
+                </span>
+                {% else %}
+                <form action="{% url 'portfolio:asset_add' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="ticker" value="{{ result.ticker }}">
+                    <button type="submit"
+                        class="inline-flex items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none">
+                        + Ajouter
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% elif query %}
+<div class="text-center py-10">
+    <p class="text-gray-500">Aucun résultat trouvé pour "{{ query }}".</p>
+</div>
+{% endif %}

@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- Top Grid: Net Worth Chart (Large) + Allocation (Donut) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Main: Net Worth History -->
+        <div
+            class="lg:col-span-2 bg-dark-800 rounded-2xl p-6 border border-gray-800 shadow-xl relative overflow-hidden group">
+            <div class="flex justify-between items-start mb-6 z-10 relative">
+                <div>
+                    <h2 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Patrimoine Net</h2>
+                    <div class="flex items-baseline gap-3">
+                        <span class="text-4xl md:text-5xl font-bold text-white">{{ total_net_worth|floatformat:0 }}
+                            €</span>
+                        <div
+                            class="flex items-center gap-1 {% if daily_variation >= 0 %}text-green-400{% else %}text-red-400{% endif %} bg-dark-900 px-2 py-1 rounded-lg text-sm font-medium">
+                            {% if daily_variation >= 0 %}
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                            </svg>
+                            +{{ daily_variation|floatformat:0 }} €
+                            {% else %}
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                    d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                            </svg>
+                            {{ daily_variation|floatformat:0 }} €
+                            {% endif %}
+                            <span class="opacity-75">({{ daily_variation_percent|floatformat:2 }}%)</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Time Range Selector Mockup -->
+                <div class="bg-dark-900 border border-gray-700 rounded-lg p-1 flex text-xs font-medium">
+                    <button onclick="updateChart('1W', this)"
+                        class="range-btn px-3 py-1 rounded-md text-gray-400 hover:text-white transition">1W</button>
+                    <button onclick="updateChart('1M', this)"
+                        class="range-btn px-3 py-1 rounded-md text-gray-400 hover:text-white transition">1M</button>
+                    <button onclick="updateChart('1Y', this)"
+                        class="range-btn px-3 py-1 rounded-md text-gray-400 hover:text-white transition">1Y</button>
+                    <button onclick="updateChart('ALL', this)"
+                        class="range-btn px-3 py-1 rounded-md bg-dark-700 text-white shadow-sm">ALL</button>
+                </div>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="h-64 md:h-80 w-full">
+                <canvas id="netWorthChart"></canvas>
+            </div>
+
+            <!-- Glow Effect behind chart -->
+            <div
+                class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gold/10 to-transparent pointer-events-none">
+            </div>
+        </div>
+
+        <!-- Right Side: Allocation & Widgets -->
+        <div class="space-y-6">
+            <!-- Allocation Donut -->
+            <div class="bg-dark-800 rounded-2xl p-6 border border-gray-800 shadow-xl relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider">Répartition</h3>
+                    <a href="{% url 'portfolio:portfolio_list' %}" class="text-gray-500 hover:text-white"><svg
+                            class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z">
+                            </path>
+                        </svg></a>
+                </div>
+                <div class="h-48 w-48 mx-auto relative">
+                    <canvas id="allocationChart"></canvas>
+                    <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+                        <span class="text-sm text-gray-500">Total</span>
+                        <span class="text-xl font-bold text-white">{{ total_net_worth|floatformat:0 }} €</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goals Widget (New) -->
+            <div class="bg-dark-800 rounded-2xl p-6 border border-gray-800 shadow-xl">
+                <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-4">Objectifs Financiers</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-white font-medium">Liberté Financière</span>
+                            <span class="text-gold">45%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-gold h-2 rounded-full" style="width: 45%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Cible : 1,000,000 €</p>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-white font-medium">Réserve de sécurité</span>
+                            <span class="text-green-400">100%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-dark-800 rounded-2xl p-1 border border-gray-800 shadow-xl">
+                <button hx-get="{% url 'portfolio:dashboard' %}" hx-target="#assets-table" hx-swap="outerHTML"
+                    class="w-full bg-[#1a1b1e] hover:bg-dark-700 text-gray-400 hover:text-white py-3 rounded-xl font-medium transition flex items-center justify-center gap-2 group text-sm disabled:opacity-50">
+                    <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
+                    </svg>
+                    <span>Actualiser les flux</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom: Recent Activity / Assets Table (Premium Style) -->
+    <div class="bg-dark-800 rounded-2xl border border-gray-800 shadow-xl overflow-hidden">
+        <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+            <h3 class="text-white font-bold text-lg">Actifs en Portefeuille</h3>
+            <a href="{% url 'portfolio:asset_list' %}" class="text-gray-400 hover:text-white text-sm">Voir tout</a>
+        </div>
+
+        <div class="p-0">
+            <!-- HTMX Poll every 60s -->
+            <div hx-get="{% url 'portfolio:dashboard' %}" hx-trigger="every 60s" hx-target="#assets-table"
+                hx-swap="outerHTML">
+                {% include "portfolio/partials/dashboard_table.html" %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts for Charts -->
+{{ allocation_labels|json_script:"allocation-labels" }}
+{{ allocation_data|json_script:"allocation-data" }}
+{{ total_net_worth|json_script:"total-net-worth" }}
+
+<script>
+    // Net Worth Chart (Line)
+    const ctxNetWorth = document.getElementById('netWorthChart').getContext('2d');
+    const totalNetWorth = parseFloat(JSON.parse(document.getElementById('total-net-worth').textContent));
+
+    // Create Gradient
+    let gradient = ctxNetWorth.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(255, 204, 128, 0.5)'); // Gold alpha
+    gradient.addColorStop(1, 'rgba(255, 204, 128, 0)');
+
+    // Net worth history - simplified mock data + current value
+    const baseHistory = [120000, 125000, 123000, 130000, 135000, 138000, 142000, 140000, 148000, 150000, 152000];
+    const fullHistory = [...baseHistory, totalNetWorth];
+
+    // Mock data for ranges - in real app, fetch from API
+    const rangeData = {
+        '1W': Array(7).fill(totalNetWorth).map((v, i) => v * (1 + (Math.random() * 0.02 - 0.01))),
+        '1M': Array(30).fill(totalNetWorth).map((v, i) => v * (1 + (Math.random() * 0.05 - 0.02))),
+        '1Y': Array(12).fill(totalNetWorth).map((v, i) => v * (1 + (Math.random() * 0.1 - 0.05))),
+        'ALL': fullHistory
+    };
+
+    // Labels corresponding to data
+    const rangeLabels = {
+        '1W': ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+        '1M': Array.from({ length: 30 }, (_, i) => `J${i + 1}`),
+        '1Y': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Déc'],
+        'ALL': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Déc']
+    };
+
+    let netWorthChart = new Chart(ctxNetWorth, {
+        type: 'line',
+        data: {
+            labels: rangeLabels['ALL'],
+            datasets: [{
+                label: 'Patrimoine',
+                data: rangeData['ALL'],
+                borderColor: '#ffcc80',
+                backgroundColor: gradient,
+                borderWidth: 3,
+                tension: 0.4, // Smooth curve
+                fill: true,
+                pointRadius: 0,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: '#1a1b1e',
+                    titleColor: '#fff',
+                    bodyColor: '#ccc',
+                    borderColor: '#333',
+                    borderWidth: 1
+                }
+            },
+            scales: {
+                y: {
+                    display: true,
+                    grid: { color: '#333', drawBorder: false },
+                    ticks: { color: '#666' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#666' }
+                }
+            }
+        }
+    });
+
+    // Time Range Update Function
+    function updateChart(range, btn) {
+        // Update Buttons
+        document.querySelectorAll('.range-btn').forEach(b => {
+            b.classList.remove('bg-dark-700', 'text-white', 'shadow-sm');
+            b.classList.add('text-gray-400');
+        });
+        btn.classList.remove('text-gray-400');
+        btn.classList.add('bg-dark-700', 'text-white', 'shadow-sm');
+
+        // Update Chart
+        netWorthChart.data.labels = rangeLabels[range] || rangeLabels['ALL'];
+        netWorthChart.data.datasets[0].data = rangeData[range] || rangeData['ALL'];
+        netWorthChart.update();
+    }
+
+    // Allocation Chart (Donut)
+    const ctxAllocation = document.getElementById('allocationChart').getContext('2d');
+    const allocationLabels = JSON.parse(document.getElementById('allocation-labels').textContent);
+    const allocationData = JSON.parse(document.getElementById('allocation-data').textContent);
+
+    new Chart(ctxAllocation, {
+        type: 'doughnut',
+        data: {
+            labels: allocationLabels,
+            datasets: [{
+                data: allocationData.length ? allocationData : [1], // fallback if empty
+                backgroundColor: [
+                    '#ffcc80', '#66bb6a', '#ef5350', '#42a5f5', '#ab47bc'
+                ],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            cutout: '80%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>
+{% endblock %}

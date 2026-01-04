@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    <div>
+        <h1 class="text-3xl font-bold text-white">Paramètres</h1>
+        <p class="text-gray-400 mt-2">Gérez vos préférences et votre compte.</p>
+    </div>
+
+    <div class="bg-dark-800 rounded-2xl border border-gray-800 shadow-xl overflow-hidden divide-y divide-gray-800">
+
+        <!-- Profile Section -->
+        <div class="p-6">
+            <h3 class="text-white font-bold mb-4">Profil</h3>
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-gold to-orange-500 p-[2px]">
+                    <div
+                        class="w-full h-full rounded-full bg-dark-900 flex items-center justify-center text-gold font-bold text-xl">
+                        {{ user.username|first|upper }}
+                    </div>
+                </div>
+                <div>
+                    <div class="text-white font-medium text-lg">{{ user.username }}</div>
+                    <div class="text-green-400 text-sm">Membre Premium</div>
+                </div>
+                <button
+                    class="ml-auto bg-dark-900 hover:bg-dark-700 text-white px-4 py-2 rounded-lg border border-gray-700 transition-colors text-sm">Modifier</button>
+            </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="p-6">
+            <h3 class="text-white font-bold mb-4">Préférences</h3>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-white font-medium">Devise principale</div>
+                        <div class="text-gray-500 text-sm">Devise d'affichage global</div>
+                    </div>
+                    <select class="bg-dark-900 border border-gray-700 text-white rounded-lg px-3 py-2 text-sm">
+                        <option>EUR (€)</option>
+                        <option>USD ($)</option>
+                    </select>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-white font-medium">Mode Sombre</div>
+                        <div class="text-gray-500 text-sm">Toujours activé</div>
+                    </div>
+                    <div class="w-10 h-6 bg-gold rounded-full relative cursor-pointer">
+                        <div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="p-6">
+            <h3 class="text-red-500 font-bold mb-4">Zone de Danger</h3>
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="text-white font-medium">Déconnexion</div>
+                    <div class="text-gray-500 text-sm">Se déconnecter de la session actuelle</div>
+                </div>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="bg-red-500/10 hover:bg-red-500/20 text-red-500 px-4 py-2 rounded-lg border border-red-500/20 transition-colors text-sm font-bold">
+                        Se déconnecter
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col items-center justify-center pt-10">
+        <h1 class="text-3xl font-bold leading-tight text-white mb-4">Ajouter un Nouvel Actif</h1>
+        <p class="text-gray-400 text-center max-w-xl mb-8">
+            Recherchez une action (Apple, Tesla...) ou une crypto-monnaie (Bitcoin, Pepe...) pour l'ajouter à la base de
+            données de WealthGravity.
+        </p>
+
+        <div class="w-full max-w-xl">
+            <input type="text" name="q"
+                class="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-lg text-lg"
+                placeholder="Rechercher un actif (ex: Apple, BTC, FR0000120271...)"
+                hx-get="{% url 'portfolio:asset_search' %}" hx-trigger="keyup changed delay:500ms"
+                hx-target="#search-results" value="{{ query|default:'' }}" autofocus>
+        </div>
+    </div>
+
+    <div id="search-results" class="max-w-4xl mx-auto">
+        {% include "portfolio/partials/asset_search_results.html" %}
+    </div>
+</div>
+{% endblock %}
