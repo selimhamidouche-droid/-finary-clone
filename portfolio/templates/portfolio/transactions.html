@@ -8,13 +8,14 @@
             <p class="text-gray-500 dark:text-gray-400 mt-2">Historique et Webhook (automatisations).</p>
         </div>
         <button onclick="document.getElementById('addTransactionModal').classList.remove('hidden')"
-            class="bg-gold hover:bg-yellow-400 text-black px-4 py-2 rounded-xl font-bold transition-colors shadow-lg shadow-gold/10">
+            class="btn-premium bg-gold hover:bg-yellow-400 text-black px-5 py-2.5 rounded-xl font-bold transition-colors shadow-lg shadow-gold/20">
             + Ajouter
         </button>
     </div>
 
     <!-- Webhook Info Box -->
-    <div class="bg-white dark:bg-dark-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 shadow-xl">
+    <div
+        class="glass-card dark:glass-card rounded-2xl p-6 border border-gray-200 dark:border-gray-800/50 shadow-xl animate-fade-in-up stagger-1">
         <h3 class="text-gray-900 dark:text-white font-bold mb-2 flex items-center gap-2">
             <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
@@ -40,7 +41,7 @@
     </div>
 
     <div
-        class="bg-white dark:bg-dark-800 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl overflow-hidden">
+        class="glass-card dark:glass-card rounded-2xl border border-gray-200 dark:border-gray-800/50 shadow-xl overflow-hidden animate-fade-in-up stagger-2">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
                 <thead class="bg-gray-50 dark:bg-dark-900/50">
@@ -59,7 +60,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-800/50">
                     {% for t in transactions %}
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <tr class="table-row-glow hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ t.date|date:"d M Y" }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span
@@ -70,7 +71,8 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ t.category }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ t.description  }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{
+                            t.description }}</td>
                         <td
                             class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold {% if t.type == 'INCOME' or t.type == 'DEPOSIT' %}text-green-600 dark:text-green-400{% else %}text-gray-900 dark:text-white{% endif %}">
                             {{ t.amount }} €
@@ -101,7 +103,7 @@
 <div id="addTransactionModal"
     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
     <div onclick="event.stopPropagation()"
-        class="bg-white dark:bg-dark-800 p-8 rounded-2xl w-full max-w-md border border-gray-200 dark:border-gray-700 shadow-2xl relative animate-fade-in">
+        class="glass-card dark:glass-card p-8 rounded-2xl w-full max-w-md border border-gray-200 dark:border-gray-700 shadow-2xl relative animate-fade-in-scale">
         <button onclick="document.getElementById('addTransactionModal').classList.add('hidden')"
             class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,7 +146,7 @@
                     class="w-full bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:border-gold focus:outline-none">
             </div>
             <button type="submit"
-                class="w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3 rounded-xl transition-colors mt-6 shadow-lg shadow-gold/20">Enregistrer</button>
+                class="btn-premium w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3.5 rounded-xl transition-colors mt-6 shadow-lg shadow-gold/20">Enregistrer</button>
         </form>
     </div>
 </div>
