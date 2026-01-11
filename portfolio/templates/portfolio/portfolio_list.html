@@ -33,8 +33,7 @@
                 <p class="text-sm text-gray-500 mb-6 font-medium">Créé par {{ portfolio.user.username }}</p>
 
                 <div class="flex items-baseline gap-1">
-                    <span class="text-3xl font-bold text-gray-900 dark:text-white">{{
-                        portfolio.total_value|floatformat:2 }}</span>
+                    <span class="text-3xl font-bold text-gray-900 dark:text-white">{{ portfolio.total_value|floatformat:2 }}</span>
                     <span class="text-lg text-yellow-600 dark:text-gold font-bold">{{ portfolio.currency }}</span>
                 </div>
                 <p class="text-xs text-gray-500 mt-1 uppercase tracking-wider font-bold">Valeur Totale</p>
