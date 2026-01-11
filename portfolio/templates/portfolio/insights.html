@@ -52,48 +52,47 @@
         <div
             class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl relative overflow-hidden group">
             <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Dividendes Projetés</h3>
-            <div class="flex items-end gap-2">
-                <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ projected_dividends|floatformat:0
-                    }}<span class="text-xl text-gray-500">€</span></span>
+            <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ projected_dividends|floatformat:0 }}<span
+                    class="text-xl text-gray-500">€</span></span>
+        </div>
+        <p class="text-sm text-green-400 mt-1 font-medium">~3% sur vos actions</p>
+        <p class="text-xs text-gray-400 mt-3">Estimation basée sur votre allocation Actions.</p>
+    </div>
+</div>
+
+<!-- Main Analysis Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Risk Analysis Radar -->
+    <div class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl">
+        <h3 class="text-gray-900 dark:text-white font-bold mb-6">Profil de Risque</h3>
+        <div class="h-64 relative">
+            <canvas id="riskRadarChart"></canvas>
+        </div>
+        <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+            <div class="text-gray-900 dark:text-white font-bold">
+                {% if volatility_score > 70 %}
+                Haute
+                {% elif volatility_score > 30 %}
+                Moyenne
+                {% else %}
+                Faible
+                {% endif %}
             </div>
-            <p class="text-sm text-green-400 mt-1 font-medium">~3% sur vos actions</p>
-            <p class="text-xs text-gray-400 mt-3">Estimation basée sur votre allocation Actions.</p>
+            <div class="text-gold font-bold">{{ volatility_score }}/100</div>
+            <div class="text-gray-900 dark:text-white font-bold">{{ holdings_count }}</div>
         </div>
     </div>
 
-    <!-- Main Analysis Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Risk Analysis Radar -->
-        <div class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl">
-            <h3 class="text-gray-900 dark:text-white font-bold mb-6">Profil de Risque</h3>
-            <div class="h-64 relative">
-                <canvas id="riskRadarChart"></canvas>
-            </div>
-            <div class="mt-6 grid grid-cols-3 gap-4 text-center">
-                <div class="text-gray-900 dark:text-white font-bold">
-                    {% if volatility_score > 70 %}
-                    Haute
-                    {% elif volatility_score > 30 %}
-                    Moyenne
-                    {% else %}
-                    Faible
-                    {% endif %}
-                </div>
-                <div class="text-gold font-bold">{{ volatility_score }}/100</div>
-                <div class="text-gray-900 dark:text-white font-bold">{{ holdings_count }}</div>
-            </div>
-        </div>
-
-        <!-- Sector Breakdown -->
-        <div class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl">
-            <h3 class="text-gray-900 dark:text-white font-bold mb-6">Exposition Sectorielle</h3>
-            <div class="space-y-4">
-                {% for category, value in allocation.items %}
-                {% widthratio value total_wealth 100 as width_percent %}
-                <div class="group">
-                    <div class="flex justify-between text-sm mb-1">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full 
+    <!-- Sector Breakdown -->
+    <div class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl">
+        <h3 class="text-gray-900 dark:text-white font-bold mb-6">Exposition Sectorielle</h3>
+        <div class="space-y-4">
+            {% for category, value in allocation.items %}
+            {% widthratio value total_wealth 100 as width_percent %}
+            <div class="group">
+                <div class="flex justify-between text-sm mb-1">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full 
                                 {% if category == 'Crypto' %}
                                     bg-purple-500
                                 {% elif category == 'Actions' %}
@@ -103,15 +102,15 @@
                                 {% else %}
                                     bg-gray-500
                                 {% endif %}">
-                            </span>
-                            <span class="text-gray-900 dark:text-white">{{ category }}</span>
-                        </div>
-                        <span class="text-gray-900 dark:text-white font-medium">
-                            {{ width_percent }}%
                         </span>
+                        <span class="text-gray-900 dark:text-white">{{ category }}</span>
                     </div>
-                    <div class="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
-                        <div data-width="{{ width_percent }}" class="allocation-bar h-full 
+                    <span class="text-gray-900 dark:text-white font-medium">
+                        {{ width_percent }}%
+                    </span>
+                </div>
+                <div class="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                    <div data-width="{{ width_percent }}" class="allocation-bar h-full 
                             {% if category == 'Crypto' %}
                                 bg-purple-500
                             {% elif category == 'Actions' %}
@@ -121,15 +120,15 @@
                             {% else %}
                                 bg-gray-500
                             {% endif %}">
-                        </div>
                     </div>
                 </div>
-                {% empty %}
-                <p class="text-gray-500 text-sm">Aucune donnée pour le moment.</p>
-                {% endfor %}
             </div>
+            {% empty %}
+            <p class="text-gray-500 text-sm">Aucune donnée pour le moment.</p>
+            {% endfor %}
         </div>
     </div>
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -67,7 +67,8 @@
         {% if asset.day_high and asset.day_low %}
         <div class="bg-white dark:bg-dark-800 rounded-xl p-4 border border-gray-200 dark:border-gray-800">
             <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Range du Jour</p>
-            <p class="text-xl font-bold text-gray-900 dark:text-white font-mono">{{ asset.day_low|floatformat:2 }} - {{ asset.day_high|floatformat:2  }}</p>
+            <p class="text-xl font-bold text-gray-900 dark:text-white font-mono">{{ asset.day_low|floatformat:2 }} - {{
+                asset.day_high|floatformat:2 }}</p>
         </div>
         {% endif %}
 
