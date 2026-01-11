@@ -6,7 +6,7 @@
     <!-- Header -->
     <div class="flex justify-between items-end">
         <div>
-            <h1 class="text-3xl font-bold text-white">Insights & Analyses</h1>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Insights & Analyses</h1>
             <p class="text-gray-400 mt-2">Optimisez votre patrimoine grâce à nos algorithmes d'analyse.</p>
         </div>
         <div class="flex gap-2">
@@ -18,171 +18,138 @@
     <!-- Top Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Diversification Score -->
-        <div class="bg-dark-800 p-6 rounded-2xl border border-gray-800 shadow-xl relative overflow-hidden group">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <svg class="w-24 h-24 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                        d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                        d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
-                </svg>
-            </div>
+        <div
+            class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl relative overflow-hidden group">
             <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Score de Diversification</h3>
             <div class="flex items-end gap-2">
-                <span class="text-4xl font-bold text-white">72<span class="text-xl text-gray-500">/100</span></span>
+                <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ diversification_score }}<span
+                        class="text-xl text-gray-500">/100</span></span>
             </div>
-            <div class="w-full bg-gray-700 h-1.5 mt-4 rounded-full overflow-hidden">
-                <div class="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 h-full w-[72%]"></div>
-            </div>
-            <p class="text-xs text-gray-400 mt-3">Bonne diversification, mais exposée à 40% sur la Tech.</p>
-        </div>
-
-        <!-- Frais Annuels (Simulés) -->
-        <div class="bg-dark-800 p-6 rounded-2xl border border-gray-800 shadow-xl relative overflow-hidden group">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <svg class="w-24 h-24 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                    </path>
-                </svg>
-            </div>
-            <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Frais Estimés (Annuel)</h3>
-            <div class="flex items-end gap-2">
-                <span class="text-4xl font-bold text-white">1.2<span class="text-xl text-gray-500">%</span></span>
-            </div>
-            <p class="text-sm text-red-400 mt-1 font-medium">- 450 € / an</p>
-            <p class="text-xs text-gray-400 mt-3">Vos frais de gestion sont légèrement au-dessus de la moyenne (0.9%).
+            <p class="text-xs text-gray-400 mt-3">
+                {% if diversification_score > 70 %}
+                Excellente diversification.
+                {% elif diversification_score > 40 %}
+                Diversification correcte, mais améliorable.
+                {% else %}
+                Attention : Forte concentration sur peu d'actifs.
+                {% endif %}
             </p>
         </div>
 
-        <!-- Dividendes Futurs -->
-        <div class="bg-dark-800 p-6 rounded-2xl border border-gray-800 shadow-xl relative overflow-hidden group">
-            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <svg class="w-24 h-24 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+        <!-- Frais Annuels (Simulés) -->
+        <div
+            class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl relative overflow-hidden group">
+            <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Frais Estimés (Annuel)</h3>
+            <div class="flex items-end gap-2">
+                <span class="text-4xl font-bold text-gray-900 dark:text-white">0.9<span
+                        class="text-xl text-gray-500">%</span></span>
             </div>
+            <p class="text-sm text-red-400 mt-1 font-medium">- {{ total_wealth|floatformat:0 }} € * 0.9%</p>
+            <p class="text-xs text-gray-400 mt-3">Basé sur une moyenne sectorielle.</p>
+        </div>
+
+        <!-- Dividendes Futurs -->
+        <div
+            class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl relative overflow-hidden group">
             <h3 class="text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Dividendes Projetés</h3>
             <div class="flex items-end gap-2">
-                <span class="text-4xl font-bold text-white">850<span class="text-xl text-gray-500">€</span></span>
+                <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ projected_dividends|floatformat:0
+                    }}<span class="text-xl text-gray-500">€</span></span>
             </div>
-            <p class="text-sm text-green-400 mt-1 font-medium">+ 12% vs année dernière</p>
-            <p class="text-xs text-gray-400 mt-3">Prochain versement : Apple Inc. (15 Mai)</p>
+            <p class="text-sm text-green-400 mt-1 font-medium">~3% sur vos actions</p>
+            <p class="text-xs text-gray-400 mt-3">Estimation basée sur votre allocation Actions.</p>
         </div>
     </div>
 
     <!-- Main Analysis Section -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
         <!-- Risk Analysis Radar -->
-        <div class="bg-dark-800 p-6 rounded-2xl border border-gray-800 shadow-xl">
-            <h3 class="text-white font-bold mb-6">Profil de Risque</h3>
+        <div class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl">
+            <h3 class="text-gray-900 dark:text-white font-bold mb-6">Profil de Risque</h3>
             <div class="h-64 relative">
                 <canvas id="riskRadarChart"></canvas>
             </div>
             <div class="mt-6 grid grid-cols-3 gap-4 text-center">
-                <div class="bg-dark-900 p-3 rounded-lg">
-                    <div class="text-xs text-gray-500 uppercase">Volatilité</div>
-                    <div class="text-white font-bold">Haute</div>
+                <div class="text-gray-900 dark:text-white font-bold">
+                    {% if volatility_score > 70 %}
+                    Haute
+                    {% elif volatility_score > 30 %}
+                    Moyenne
+                    {% else %}
+                    Faible
+                    {% endif %}
                 </div>
-                <div class="bg-dark-900 p-3 rounded-lg">
-                    <div class="text-xs text-gray-500 uppercase">Sharpe Ratio</div>
-                    <div class="text-gold font-bold">1.8</div>
-                </div>
-                <div class="bg-dark-900 p-3 rounded-lg">
-                    <div class="text-xs text-gray-500 uppercase">Beta</div>
-                    <div class="text-white font-bold">1.2</div>
-                </div>
+                <div class="text-gold font-bold">{{ volatility_score }}/100</div>
+                <div class="text-gray-900 dark:text-white font-bold">{{ holdings_count }}</div>
             </div>
         </div>
 
         <!-- Sector Breakdown -->
-        <div class="bg-dark-800 p-6 rounded-2xl border border-gray-800 shadow-xl">
-            <h3 class="text-white font-bold mb-6">Exposition Sectorielle</h3>
+        <div class="bg-white dark:bg-dark-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-xl">
+            <h3 class="text-gray-900 dark:text-white font-bold mb-6">Exposition Sectorielle</h3>
             <div class="space-y-4">
-                <!-- Tech -->
+                {% for category, value in allocation.items %}
+                {% widthratio value total_wealth 100 as width_percent %}
                 <div class="group">
                     <div class="flex justify-between text-sm mb-1">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                            <span class="text-white">Technologie</span>
+                            <span class="w-2 h-2 rounded-full 
+                                {% if category == 'Crypto' %}
+                                    bg-purple-500
+                                {% elif category == 'Actions' %}
+                                    bg-blue-500
+                                {% elif category == 'Immobilier' %}
+                                    bg-orange-500
+                                {% else %}
+                                    bg-gray-500
+                                {% endif %}">
+                            </span>
+                            <span class="text-gray-900 dark:text-white">{{ category }}</span>
                         </div>
-                        <span class="text-white font-medium">45%</span>
+                        <span class="text-gray-900 dark:text-white font-medium">
+                            {{ width_percent }}%
+                        </span>
                     </div>
                     <div class="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
-                        <div class="bg-blue-500 h-full w-[45%] transition-all duration-1000 group-hover:w-[48%]"></div>
-                    </div>
-                </div>
-                <!-- Real Estate -->
-                <div class="group">
-                    <div class="flex justify-between text-sm mb-1">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-orange-500"></span>
-                            <span class="text-white">Immobilier</span>
+                        <div data-width="{{ width_percent }}" class="allocation-bar h-full 
+                            {% if category == 'Crypto' %}
+                                bg-purple-500
+                            {% elif category == 'Actions' %}
+                                bg-blue-500
+                            {% elif category == 'Immobilier' %}
+                                bg-orange-500
+                            {% else %}
+                                bg-gray-500
+                            {% endif %}">
                         </div>
-                        <span class="text-white font-medium">20%</span>
-                    </div>
-                    <div class="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
-                        <div class="bg-orange-500 h-full w-[20%]"></div>
                     </div>
                 </div>
-                <!-- Finance -->
-                <div class="group">
-                    <div class="flex justify-between text-sm mb-1">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                            <span class="text-white">Finance</span>
-                        </div>
-                        <span class="text-white font-medium">15%</span>
-                    </div>
-                    <div class="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
-                        <div class="bg-green-500 h-full w-[15%]"></div>
-                    </div>
-                </div>
-                <!-- Crypto -->
-                <div class="group">
-                    <div class="flex justify-between text-sm mb-1">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-                            <span class="text-white">Crypto</span>
-                        </div>
-                        <span class="text-white font-medium">10%</span>
-                    </div>
-                    <div class="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
-                        <div class="bg-purple-500 h-full w-[10%]"></div>
-                    </div>
-                </div>
+                {% empty %}
+                <p class="text-gray-500 text-sm">Aucune donnée pour le moment.</p>
+                {% endfor %}
             </div>
         </div>
-
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ risk_labels|json_script:"risk-labels" }}
+{{ risk_data|json_script:"risk-data" }}
 <script>
+    const labels = JSON.parse(document.getElementById('risk-labels').textContent);
+    const data = JSON.parse(document.getElementById('risk-data').textContent);
+
     const ctxRadar = document.getElementById('riskRadarChart').getContext('2d');
     new Chart(ctxRadar, {
         type: 'radar',
         data: {
-            labels: ['Volatilité', 'Géographie', 'Secteur', 'Liquidité', 'Devise'],
+            labels: labels,
             datasets: [{
                 label: 'Mon Portefeuille',
-                data: [85, 40, 60, 90, 70],
+                data: data,
                 fill: true,
-                backgroundColor: 'rgba(255, 204, 128, 0.2)', // Gold transparent
-                borderColor: '#ffcc80',
-                pointBackgroundColor: '#ffcc80',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#ffcc80'
-            }, {
-                label: 'Investisseur Moyen',
-                data: [50, 50, 50, 50, 50],
-                fill: true,
-                backgroundColor: 'rgba(100, 100, 100, 0.1)',
-                borderColor: '#4b5563',
-                pointBackgroundColor: '#4b5563',
-                borderDash: [5, 5]
+                backgroundColor: 'rgba(255, 204, 128, 0.2)',
+                borderColor: '#ffcc80'
             }]
         },
         options: {
@@ -190,16 +157,22 @@
                 r: {
                     angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
                     grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                    pointLabels: { color: '#9ca3af', font: { size: 12 } },
-                    ticks: { display: false, backdropColor: 'transparent' }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: { color: '#fff' }
+                    pointLabels: { color: '#9ca3af' },
+                    ticks: { display: false, backdropColor: 'transparent', max: 100, min: 0 }
                 }
             }
         }
+    });
+</script>
+<script>
+    // Asset Allocation Progress Bars
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.allocation-bar').forEach(bar => {
+            const width = bar.getAttribute('data-width');
+            if (width) {
+                bar.style.width = width + '%';
+            }
+        });
     });
 </script>
 {% endblock %}

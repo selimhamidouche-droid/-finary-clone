@@ -50,6 +50,16 @@ class Holding(models.Model):
         """Returns negative invested value for simple P&L addition in templates"""
         return -self.invested_value
 
+    @property
+    def pnl(self):
+        return self.current_value - self.invested_value
+
+    @property
+    def pnl_percent(self):
+        if self.invested_value > 0:
+            return (self.pnl / self.invested_value) * 100
+        return 0
+
     def __str__(self):
         return f"{self.quantity} {self.asset.ticker} in {self.portfolio.name}"
 

@@ -11,6 +11,7 @@ urlpatterns = [
     path('portfolios/<int:pk>/delete/', views.portfolio_delete, name='portfolio_delete'),
     path('portfolios/<int:pk>/', views.portfolio_detail, name='portfolio_detail'),
     path('portfolios/<int:portfolio_id>/add_holding/', views.holding_create, name='holding_create'),
+    path('portfolios/<int:portfolio_id>/asset/<int:asset_id>/', views.asset_detail, name='asset_detail'),
     path('holdings/<int:pk>/delete/', views.holding_delete, name='holding_delete'),
     path('holdings/<int:pk>/delete/', views.holding_delete, name='holding_delete'),
     path('assets/', views.asset_list, name='asset_list'),
@@ -22,4 +23,5 @@ urlpatterns = [
     path('api/webhook/transaction/', views.webhook_transaction, name='webhook_transaction'),
     path('goals/', views.goals, name='goals'),
     path('settings/', views.settings, name='settings'),
+    path('market/<str:ticker>/', views.market_asset_detail, name='market_asset_detail'),
 ]

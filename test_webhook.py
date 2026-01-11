@@ -5,10 +5,8 @@ import json
 url = 'http://127.0.0.1:8000/api/webhook/transaction/'
 headers = {'Content-Type': 'application/json'}
 payload = {
-    "secret": "my-secret-key-123",
-    "amount": 42.00,
-    "merchant": "Uber Eats",
-    "card": "Amex",
+    "montant": 42.00,
+    "commercant": "Uber Eats",
     "date": "2026-01-04"
 }
 

@@ -9,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -27,6 +28,31 @@
                         sans: ['Inter', 'sans-serif'],
                     }
                 }
+            }
+        }
+    </script>
+    <script>
+        // Check for saved theme preference, otherwise default to dark
+        if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+            // Defaulting to dark if no preference, but respecting explicit light preference
+            // Actually, for this specific request "even if system is dark", we prioritize manual toggle.
+            // Let's default to dark unless explicitly light.
+            if (localStorage.theme === 'light') {
+                document.documentElement.classList.remove('dark')
+            } else {
+                document.documentElement.classList.add('dark')
+            }
+        } else {
+            document.documentElement.classList.add('dark')
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
             }
         }
     </script>
@@ -122,11 +148,12 @@
 </head>
 
 <body
-    class="bg-[#050505] text-gray-100 antialiased h-screen flex overflow-hidden selection:bg-gold selection:text-black"
+    class="bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 antialiased h-screen flex overflow-hidden selection:bg-gold selection:text-black"
     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
     <!-- Sidebar -->
-    <aside class="w-72 bg-[#0a0b0d] border-r border-gray-800/50 hidden md:flex flex-col z-20 shadow-2xl">
+    <aside
+        class="w-72 bg-white dark:bg-[#0a0b0d] border-r border-gray-200 dark:border-gray-800/50 hidden md:flex flex-col z-20 shadow-xl transition-colors duration-300">
         <!-- Logo -->
         <div class="h-24 flex items-center px-8">
             <div class="flex items-center gap-3 text-gold font-bold text-2xl tracking-tight group cursor-pointer">
@@ -140,7 +167,7 @@
                     </svg>
                 </div>
                 <span
-                    class="bg-clip-text text-transparent bg-gradient-to-r from-gold to-yellow-200">WealthGravity</span>
+                    class="bg-clip-text text-transparent bg-gradient-to-r from-yellow-600 to-yellow-500 dark:from-gold dark:to-yellow-200">WealthGravity</span>
             </div>
         </div>
 
@@ -149,7 +176,7 @@
             <p class="px-4 text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Menu Principal</p>
 
             <a href="{% url 'portfolio:dashboard' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-400 hover:text-white hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                 <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -159,7 +186,7 @@
                 Tableau de bord
             </a>
             <a href="{% url 'portfolio:portfolio_list' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-400 hover:text-white hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'portfolio_list' %}active{% endif %}">
+                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'portfolio_list' %}active{% endif %}">
                 <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -169,7 +196,7 @@
                 Portefeuilles
             </a>
             <a href="{% url 'portfolio:asset_list' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-400 hover:text-white hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'asset_list' %}active{% endif %}">
+                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'asset_list' %}active{% endif %}">
                 <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -178,7 +205,7 @@
                 Actifs & Marchés
             </a>
             <a href="{% url 'portfolio:transactions' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-400 hover:text-white hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'transactions' %}active{% endif %}">
+                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'transactions' %}active{% endif %}">
                 <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -190,7 +217,7 @@
 
             <p class="px-4 text-xs font-bold text-gray-500 uppercase tracking-widest mt-8 mb-4">Analyse</p>
             <a href="{% url 'portfolio:insights' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-400 hover:text-white hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'insights' %}active{% endif %}">
+                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'insights' %}active{% endif %}">
                 <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -202,70 +229,100 @@
         </nav>
 
         <!-- Use Profile -->
-        <div class="p-6 bg-[#0F1012] border-t border-gray-800">
+        <div
+            class="p-6 bg-white dark:bg-[#0F1012] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()"
+                class="w-full mb-4 flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors cursor-pointer group text-gray-600 dark:text-gray-400">
+                <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                    </path>
+                </svg>
+                <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                    </path>
+                </svg>
+                <span class="text-sm font-medium">Mode <span class="hidden dark:inline">Clair</span><span
+                        class="inline dark:hidden">Sombre</span></span>
+            </button>
             <a href="{% url 'portfolio:settings' %}"
-                class="flex items-center gap-3 p-3 rounded-xl hover:bg-dark-800 transition-colors cursor-pointer group">
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors cursor-pointer group">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold to-orange-500 p-[2px]">
                     <div
-                        class="w-full h-full rounded-full bg-dark-900 flex items-center justify-center text-gold font-bold text-sm">
+                        class="w-full h-full rounded-full bg-gray-100 dark:bg-dark-900 flex items-center justify-center text-gold font-bold text-sm">
                         {{ user.username|first|upper }}
                     </div>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-white font-medium truncate">{{ user.username }}</div>
+                    <div class="text-gray-900 dark:text-white font-medium truncate">{{ user.username }}</div>
                     <div class="text-xs text-green-400 flex items-center gap-1">
                         <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
                         Connecté
                     </div>
                 </div>
-                <svg class="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" fill="none"
-                    stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                    </path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-            </a>
+        </div>
+        <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors"
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+            </path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+            </path>
+        </svg>
+        </a>
         </div>
     </aside>
 
     <!-- Main Content Wrapper -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <!-- Market Marquee -->
-        <div class="h-10 bg-[#0a0b0d] border-b border-gray-800 flex items-center z-20">
+        <div
+            class="h-10 bg-white dark:bg-[#0a0b0d] border-b border-gray-200 dark:border-gray-800 flex items-center z-20 transition-colors duration-300">
             <div class="marquee-container w-full flex items-center">
                 <div class="marquee-content flex gap-8 items-center text-xs font-mono font-medium tracking-wide px-4">
                     <!-- Duplicate items for seamless loop -->
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-gold">BTC/USD</span>
-                        $45,721.00 <span class="text-green-500">+2.4%</span></span>
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-blue-400">ETH/USD</span>
-                        $2,430.50 <span class="text-green-500">+1.1%</span></span>
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-white">S&P 500</span> 4,780.20
-                        <span class="text-red-400">-0.3%</span></span>
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-yellow-400">GOLD</span>
-                        $2,045.30 <span class="text-green-500">+0.5%</span></span>
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-gray-300">EUR/USD</span>
-                        1.0950 <span class="text-gray-500">0.0%</span></span>
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-purple-400">SOL/USD</span>
-                        $98.40 <span class="text-green-500">+5.2%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-yellow-600 dark:text-gold">BTC/USD</span>
+                        $45,721.00 <span class="text-green-600 dark:text-green-500">+2.4%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-blue-600 dark:text-blue-400">ETH/USD</span>
+                        $2,430.50 <span class="text-green-600 dark:text-green-500">+1.1%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-gray-900 dark:text-white">S&P 500</span> 4,780.20
+                        <span class="text-red-500 dark:text-red-400">-0.3%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-yellow-600 dark:text-yellow-400">GOLD</span>
+                        $2,045.30 <span class="text-green-600 dark:text-green-500">+0.5%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-gray-500 dark:text-gray-300">EUR/USD</span>
+                        1.0950 <span class="text-gray-400 dark:text-gray-500">0.0%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-purple-600 dark:text-purple-400">SOL/USD</span>
+                        $98.40 <span class="text-green-600 dark:text-green-500">+5.2%</span></span>
                     <!-- Repeat -->
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-gold">BTC/USD</span>
-                        $45,721.00 <span class="text-green-500">+2.4%</span></span>
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-blue-400">ETH/USD</span>
-                        $2,430.50 <span class="text-green-500">+1.1%</span></span>
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-white">S&P 500</span> 4,780.20
-                        <span class="text-red-400">-0.3%</span></span>
-                    <span class="flex items-center gap-2 text-gray-400"><span class="text-yellow-400">GOLD</span>
-                        $2,045.30 <span class="text-green-500">+0.5%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-yellow-600 dark:text-gold">BTC/USD</span>
+                        $45,721.00 <span class="text-green-600 dark:text-green-500">+2.4%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-blue-600 dark:text-blue-400">ETH/USD</span>
+                        $2,430.50 <span class="text-green-600 dark:text-green-500">+1.1%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-gray-900 dark:text-white">S&P 500</span> 4,780.20
+                        <span class="text-red-500 dark:text-red-400">-0.3%</span></span>
+                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
+                            class="text-yellow-600 dark:text-yellow-400">GOLD</span>
+                        $2,045.30 <span class="text-green-600 dark:text-green-500">+0.5%</span></span>
                 </div>
             </div>
         </div>
 
-        <main class="flex-1 overflow-y-auto bg-[#050505] p-4 md:p-8 scroll-smooth relative">
+        <main
+            class="flex-1 overflow-y-auto bg-gray-50 dark:bg-[#050505] p-4 md:p-8 scroll-smooth relative transition-colors duration-300">
             <!-- Background Glows -->
             <div
-                class="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-[#1a1b1e] to-transparent pointer-events-none opacity-50">
+                class="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-gray-100 dark:from-[#1a1b1e] to-transparent pointer-events-none opacity-50">
             </div>
             <div class="relative z-10 max-w-7xl mx-auto animate-fade-in">
                 {% block content %}{% endblock %}

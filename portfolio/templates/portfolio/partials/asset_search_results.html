@@ -1,11 +1,11 @@
 {% if results %}
 <div class="space-y-4 mt-8">
-    <h3 class="text-lg font-medium text-gray-300">Résultats pour "{{ query }}"</h3>
+    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-300">Résultats pour "{{ query }}"</h3>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {% for result in results %}
         <div
-            class="bg-gray-800 rounded-lg p-4 flex items-center justify-between shadow hover:bg-gray-750 transition border border-gray-700">
+            class="bg-white dark:bg-gray-800 rounded-lg p-4 flex items-center justify-between shadow hover:bg-gray-50 dark:hover:bg-gray-750 transition border border-gray-200 dark:border-gray-700">
             <div class="flex-1 min-w-0">
                 <div class="flex items-center space-x-3">
                     <p class="text-lg font-medium text-indigo-400 truncate">
@@ -17,7 +17,7 @@
                         {{ result.category }}
                     </span>
                 </div>
-                <p class="text-sm text-gray-400 truncate mt-1">
+                <p class="text-sm text-gray-500 dark:text-gray-400 truncate mt-1">
                     {{ result.name }}
                 </p>
             </div>

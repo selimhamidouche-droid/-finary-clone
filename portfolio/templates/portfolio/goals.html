@@ -3,13 +3,14 @@
 {% block content %}
 <div class="space-y-8 animate-fade-in">
     <div>
-        <h1 class="text-3xl font-bold text-white">Vos Objectifs</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Vos Objectifs</h1>
         <p class="text-gray-400 mt-2">Planifiez votre avenir financier.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Goal Card 1 -->
-        <div class="bg-dark-800 rounded-2xl p-6 border border-gray-800 shadow-xl relative overflow-hidden group">
+        <div
+            class="bg-white dark:bg-dark-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 shadow-xl relative overflow-hidden group">
             <div class="flex justify-between items-start mb-4">
                 <div class="h-12 w-12 rounded-xl bg-gold/10 flex items-center justify-center text-gold">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,11 +21,11 @@
                 </div>
                 <span class="bg-gold text-black text-xs font-bold px-2 py-1 rounded-lg">45%</span>
             </div>
-            <h3 class="text-xl font-bold text-white mb-1">Liberté Financière</h3>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Liberté Financière</h3>
             <p class="text-sm text-gray-500 mb-6">Objectif : 1,000,000 €</p>
 
             <div class="relative pt-1">
-                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-dark-900">
+                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200 dark:bg-dark-900">
                     <div style="width:45%"
                         class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gold">
                     </div>
@@ -34,14 +35,14 @@
 
         <!-- Add Goal Card -->
         <div
-            class="bg-dark-800 rounded-2xl p-6 border border-gray-800 border-dashed shadow-xl flex flex-col items-center justify-center text-center group cursor-pointer hover:border-gold/50 transition-colors">
+            class="bg-white dark:bg-dark-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-800 border-dashed shadow-xl flex flex-col items-center justify-center text-center group cursor-pointer hover:border-gold/50 transition-colors">
             <div
-                class="h-16 w-16 rounded-full bg-dark-900 flex items-center justify-center text-gray-600 group-hover:text-gold transition-colors mb-4">
+                class="h-16 w-16 rounded-full bg-gray-100 dark:bg-dark-900 flex items-center justify-center text-gray-400 dark:text-gray-600 group-hover:text-gold transition-colors mb-4">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
             </div>
-            <h3 class="text-white font-bold mb-2">Nouvel Objectif</h3>
+            <h3 class="text-gray-900 dark:text-white font-bold mb-2">Nouvel Objectif</h3>
             <p class="text-sm text-gray-500">Immobilier, Retraite, Projet...</p>
         </div>
     </div>
