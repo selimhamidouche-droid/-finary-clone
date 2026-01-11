@@ -95,7 +95,7 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres.unuhvmfinqkkqywfvhhc:Chevre69100@aws-1-eu-west-1.pooler.supabase.com:6543/postgres',
+        default=os.environ.get('DATABASE_URL', 'postgresql://postgres.unuhvmfinqkkqywfvhhc:Chevre69100@aws-1-eu-west-1.pooler.supabase.com:6543/postgres'),
         conn_max_age=600
     )
 }
