@@ -18,6 +18,7 @@ urlpatterns = [
     path('assets/search/', views.asset_search, name='asset_search'),
     path('asset/add/', views.asset_add, name='asset_add'),
     path('insights/', views.insights, name='insights'),
+    path('simulator/', views.simulator, name='simulator'),
     path('transactions/', views.transactions, name='transactions'),
     path('transactions/create/', views.transaction_create, name='transaction_create'),
     path('api/webhook/transaction/', views.webhook_transaction, name='webhook_transaction'),

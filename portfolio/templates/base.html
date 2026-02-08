@@ -31,8 +31,10 @@
         }
     </script>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <!-- Chart.js -->
@@ -45,7 +47,7 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(12px);
@@ -66,7 +68,8 @@
             border: 1px solid transparent;
         }
 
-        .glass-sidebar-item:hover, .glass-sidebar-item.active {
+        .glass-sidebar-item:hover,
+        .glass-sidebar-item.active {
             background: rgba(43, 140, 238, 0.3);
             box-shadow: 0 0 15px rgba(43, 140, 238, 0.2);
             border: 1px solid rgba(43, 140, 238, 0.4);
@@ -80,9 +83,17 @@
         }
 
         @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* === CUSTOM SCROLLBAR === */
@@ -106,18 +117,40 @@
 
         /* === ANIMATIONS === */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-fade-in-up {
             animation: fadeInUp 0.5s ease-out forwards;
         }
 
-        .stagger-1 { animation-delay: 0.1s; opacity: 0; }
-        .stagger-2 { animation-delay: 0.2s; opacity: 0; }
-        .stagger-3 { animation-delay: 0.3s; opacity: 0; }
-        .stagger-4 { animation-delay: 0.4s; opacity: 0; }
+        .stagger-1 {
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+
+        .stagger-2 {
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .stagger-3 {
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .stagger-4 {
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
 
         /* === HTMX LOADING === */
         .htmx-request {
@@ -130,6 +163,7 @@
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
+
         .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -142,69 +176,95 @@
 
     <!-- Main Glass Container -->
     <div class="glass-panel w-full max-w-[1600px] h-[95vh] rounded-[2.5rem] flex overflow-hidden shadow-2xl relative">
-        
+
         <!-- Decorative glowing orbs -->
-        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/30 rounded-full blur-[100px] pointer-events-none"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+        <div
+            class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/30 rounded-full blur-[100px] pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none">
+        </div>
 
         <!-- Sidebar -->
         <aside class="hidden md:flex flex-col w-72 h-full border-r border-white/5 relative z-10 p-6">
-            
+
             <!-- Logo -->
             <div class="flex items-center gap-3 mb-8 px-2">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-lg shadow-primary/30">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-lg shadow-primary/30">
                     <span class="material-symbols-outlined text-white text-xl">bolt</span>
                 </div>
-                <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">WealthGravity</span>
+                <span
+                    class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">WealthGravity</span>
             </div>
 
             <!-- Navigation -->
             <nav class="flex flex-col gap-2 flex-1">
                 <p class="px-4 text-xs font-bold text-white/40 uppercase tracking-widest mb-2">Menu Principal</p>
-                
+
                 <a href="{% url 'portfolio:dashboard' %}"
                     class="glass-sidebar-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
-                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">dashboard</span>
-                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Tableau de bord</span>
+                    <span
+                        class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">dashboard</span>
+                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Tableau de
+                        bord</span>
                 </a>
-                
+
                 <a href="{% url 'portfolio:portfolio_list' %}"
                     class="glass-sidebar-item {% if request.resolver_match.url_name == 'portfolio_list' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
-                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">account_balance_wallet</span>
-                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Portefeuilles</span>
+                    <span
+                        class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">account_balance_wallet</span>
+                    <span
+                        class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Portefeuilles</span>
                 </a>
-                
+
                 <a href="{% url 'portfolio:asset_list' %}"
                     class="glass-sidebar-item {% if request.resolver_match.url_name == 'asset_list' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
-                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">trending_up</span>
-                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Actifs & Marchés</span>
+                    <span
+                        class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">trending_up</span>
+                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Actifs &
+                        Marchés</span>
                 </a>
-                
+
                 <a href="{% url 'portfolio:transactions' %}"
                     class="glass-sidebar-item {% if request.resolver_match.url_name == 'transactions' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
-                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">receipt_long</span>
-                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Transactions</span>
+                    <span
+                        class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">receipt_long</span>
+                    <span
+                        class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Transactions</span>
                 </a>
 
                 <p class="px-4 text-xs font-bold text-white/40 uppercase tracking-widest mt-6 mb-2">Analyse</p>
-                
+
                 <a href="{% url 'portfolio:insights' %}"
                     class="glass-sidebar-item {% if request.resolver_match.url_name == 'insights' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
-                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">insights</span>
-                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Insights</span>
+                    <span
+                        class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">insights</span>
+                    <span
+                        class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Insights</span>
+                </a>
+
+                <a href="{% url 'portfolio:simulator' %}"
+                    class="glass-sidebar-item {% if request.resolver_match.url_name == 'simulator' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
+                    <span
+                        class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">calculate</span>
+                    <span
+                        class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Simulateur</span>
                 </a>
             </nav>
 
             <!-- Bottom Section -->
             <div class="mt-auto">
                 <!-- Premium Card -->
-                <div class="glass-card p-4 rounded-2xl mb-4 bg-gradient-to-br from-primary/20 to-purple-500/20 border-white/10">
+                <div
+                    class="glass-card p-4 rounded-2xl mb-4 bg-gradient-to-br from-primary/20 to-purple-500/20 border-white/10">
                     <div class="flex items-center gap-3 mb-2">
                         <span class="material-symbols-outlined text-yellow-300 text-xl">stars</span>
                         <p class="text-xs font-bold text-white uppercase tracking-wider">Premium</p>
                     </div>
                     <p class="text-xs text-white/70 mb-3">Débloquez toutes les fonctionnalités avancées.</p>
-                    <button class="w-full py-2 bg-primary hover:bg-blue-600 text-white text-xs font-bold rounded-full transition-colors shadow-lg shadow-blue-500/30">
+                    <button
+                        class="w-full py-2 bg-primary hover:bg-blue-600 text-white text-xs font-bold rounded-full transition-colors shadow-lg shadow-blue-500/30">
                         Passer à Premium
                     </button>
                 </div>
@@ -213,27 +273,32 @@
                 <a href="{% url 'portfolio:settings' %}"
                     class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
                     <div class="relative">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold text-sm border-2 border-white/20">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold text-sm border-2 border-white/20">
                             {{ user.username|first|upper }}
                         </div>
-                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-[#101922] rounded-full"></div>
+                        <div
+                            class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-[#101922] rounded-full">
+                        </div>
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-white text-sm font-semibold truncate">{{ user.username }}</p>
                         <p class="text-white/50 text-xs">Connecté</p>
                     </div>
-                    <span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors">settings</span>
+                    <span
+                        class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors">settings</span>
                 </a>
             </div>
         </aside>
 
         <!-- Main Content Area -->
         <main class="flex-1 flex flex-col h-full overflow-y-auto relative z-10 scrollbar-hide">
-            
+
             <!-- Mobile Header -->
             <header class="flex md:hidden items-center justify-between p-6 pb-2">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+                    <div
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold text-sm">
                         {{ user.username|first|upper }}
                     </div>
                     <span class="font-bold">{{ user.username }}</span>

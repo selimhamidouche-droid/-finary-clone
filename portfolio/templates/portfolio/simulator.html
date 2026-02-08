@@ -1,0 +1,529 @@
+{% extends 'base.html' %}
+
+{% block title %}Simulateur d'Investissement | WealthGravity{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in-up">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl md:text-4xl font-black mb-2">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/60">
+                    Simulateur d'Investissement
+                </span>
+            </h1>
+            <p class="text-white/50">Projetez la croissance de votre patrimoine sur le long terme</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column: Controls -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Initial Capital -->
+            <div class="glass-card rounded-2xl p-6 stagger-1 animate-fade-in-up">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">savings</span>
+                    </div>
+                    <div>
+                        <p class="text-white/50 text-xs uppercase tracking-wider">Capital Initial</p>
+                        <p class="text-xl font-bold text-white" id="capitalDisplay">10 000 €</p>
+                    </div>
+                </div>
+                <input type="range" id="capitalSlider" min="1000" max="500000" value="10000" step="1000"
+                    class="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-primary">
+                <div class="flex justify-between text-xs text-white/40 mt-2">
+                    <span>1 000 €</span>
+                    <span>500 000 €</span>
+                </div>
+            </div>
+
+            <!-- Monthly Contribution -->
+            <div class="glass-card rounded-2xl p-6 stagger-2 animate-fade-in-up">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-green-400">event_repeat</span>
+                    </div>
+                    <div>
+                        <p class="text-white/50 text-xs uppercase tracking-wider">Versement Mensuel</p>
+                        <p class="text-xl font-bold text-white" id="monthlyDisplay">500 €</p>
+                    </div>
+                </div>
+                <input type="range" id="monthlySlider" min="0" max="5000" value="500" step="50"
+                    class="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-green-500">
+                <div class="flex justify-between text-xs text-white/40 mt-2">
+                    <span>0 €</span>
+                    <span>5 000 €</span>
+                </div>
+            </div>
+
+            <!-- Annual Return Rate -->
+            <div class="glass-card rounded-2xl p-6 stagger-3 animate-fade-in-up">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-purple-400">trending_up</span>
+                    </div>
+                    <div>
+                        <p class="text-white/50 text-xs uppercase tracking-wider">Rendement Annuel</p>
+                        <p class="text-xl font-bold text-white" id="rateDisplay">7 %</p>
+                    </div>
+                </div>
+                <input type="range" id="rateSlider" min="0" max="15" value="7" step="0.5"
+                    class="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-purple-500">
+                <div class="flex justify-between text-xs text-white/40 mt-2">
+                    <span>0 %</span>
+                    <span>15 %</span>
+                </div>
+                <!-- Preset buttons -->
+                <div class="flex gap-2 mt-4">
+                    <button onclick="setRate(3)"
+                        class="flex-1 py-2 px-3 text-xs font-medium rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all border border-white/10">
+                        Prudent (3%)
+                    </button>
+                    <button onclick="setRate(7)"
+                        class="flex-1 py-2 px-3 text-xs font-medium rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all border border-white/10">
+                        Modéré (7%)
+                    </button>
+                    <button onclick="setRate(10)"
+                        class="flex-1 py-2 px-3 text-xs font-medium rounded-lg bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-all border border-white/10">
+                        Agressif (10%)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Duration -->
+            <div class="glass-card rounded-2xl p-6 stagger-4 animate-fade-in-up">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-orange-400">schedule</span>
+                    </div>
+                    <div>
+                        <p class="text-white/50 text-xs uppercase tracking-wider">Durée</p>
+                        <p class="text-xl font-bold text-white" id="durationDisplay">20 ans</p>
+                    </div>
+                </div>
+                <input type="range" id="durationSlider" min="1" max="40" value="20" step="1"
+                    class="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-orange-500">
+                <div class="flex justify-between text-xs text-white/40 mt-2">
+                    <span>1 an</span>
+                    <span>40 ans</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Results & Chart -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <!-- Final Capital -->
+                <div class="glass-card rounded-2xl p-5 stagger-1 animate-fade-in-up">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-primary text-lg">account_balance</span>
+                        <p class="text-white/50 text-xs uppercase tracking-wider">Capital Final</p>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black text-white" id="finalCapital">0 €</p>
+                </div>
+
+                <!-- Total Invested -->
+                <div class="glass-card rounded-2xl p-5 stagger-2 animate-fade-in-up">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-blue-400 text-lg">payments</span>
+                        <p class="text-white/50 text-xs uppercase tracking-wider">Total Investi</p>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black text-blue-400" id="totalInvested">0 €</p>
+                </div>
+
+                <!-- Interest Earned -->
+                <div class="glass-card rounded-2xl p-5 stagger-3 animate-fade-in-up">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-green-400 text-lg">trending_up</span>
+                        <p class="text-white/50 text-xs uppercase tracking-wider">Intérêts Gagnés</p>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black text-green-400" id="interestEarned">0 €</p>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="glass-card rounded-2xl p-6 stagger-4 animate-fade-in-up">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-white">Projection de Croissance</h3>
+                    <div class="flex items-center gap-4 text-xs">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                            <span class="text-white/60">Investi</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="text-white/60">Intérêts</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative h-[350px]">
+                    <canvas id="projectionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Details Table -->
+            <div class="glass-card rounded-2xl p-6 animate-fade-in-up">
+                <h3 class="text-lg font-bold text-white mb-4">Détails par Période</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-white/50 text-xs uppercase tracking-wider border-b border-white/10">
+                                <th class="text-left py-3 px-2">Année</th>
+                                <th class="text-right py-3 px-2">Capital</th>
+                                <th class="text-right py-3 px-2">Investi</th>
+                                <th class="text-right py-3 px-2">Intérêts</th>
+                                <th class="text-right py-3 px-2">Croissance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailsTable" class="text-sm">
+                            <!-- Filled by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Elements
+    const capitalSlider = document.getElementById('capitalSlider');
+    const monthlySlider = document.getElementById('monthlySlider');
+    const rateSlider = document.getElementById('rateSlider');
+    const durationSlider = document.getElementById('durationSlider');
+
+    const capitalDisplay = document.getElementById('capitalDisplay');
+    const monthlyDisplay = document.getElementById('monthlyDisplay');
+    const rateDisplay = document.getElementById('rateDisplay');
+    const durationDisplay = document.getElementById('durationDisplay');
+
+    const finalCapitalEl = document.getElementById('finalCapital');
+    const totalInvestedEl = document.getElementById('totalInvested');
+    const interestEarnedEl = document.getElementById('interestEarned');
+    const detailsTable = document.getElementById('detailsTable');
+
+    // Chart
+    let projectionChart;
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('fr-FR', {
+            style: 'currency',
+            currency: 'EUR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(value);
+    }
+
+    function formatPercent(value) {
+        return new Intl.NumberFormat('fr-FR', {
+            style: 'percent',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 1
+        }).format(value / 100);
+    }
+
+    function setRate(rate) {
+        rateSlider.value = rate;
+        updateSimulation();
+    }
+
+    function calculateProjection(capital, monthly, rate, years) {
+        const monthlyRate = rate / 100 / 12;
+        const months = years * 12;
+
+        const labels = [];
+        const capitalData = [];
+        const investedData = [];
+        const tableRows = [];
+
+        let currentCapital = capital;
+        let totalInvested = capital;
+
+        for (let year = 0; year <= years; year++) {
+            if (year === 0) {
+                labels.push('Début');
+                capitalData.push(capital);
+                investedData.push(capital);
+                continue;
+            }
+
+            // Calculate for 12 months
+            for (let month = 0; month < 12; month++) {
+                currentCapital = currentCapital * (1 + monthlyRate) + monthly;
+                totalInvested += monthly;
+            }
+
+            labels.push(`An ${year}`);
+            capitalData.push(Math.round(currentCapital));
+            investedData.push(Math.round(totalInvested));
+
+            const interests = currentCapital - totalInvested;
+            const growth = ((currentCapital - capital) / capital * 100);
+
+            tableRows.push({
+                year: year,
+                capital: currentCapital,
+                invested: totalInvested,
+                interests: interests,
+                growth: growth
+            });
+        }
+
+        return { labels, capitalData, investedData, tableRows, finalCapital: currentCapital, totalInvested, interests: currentCapital - totalInvested };
+    }
+
+    function updateSimulation() {
+        const capital = parseFloat(capitalSlider.value);
+        const monthly = parseFloat(monthlySlider.value);
+        const rate = parseFloat(rateSlider.value);
+        const duration = parseInt(durationSlider.value);
+
+        // Update displays
+        capitalDisplay.textContent = formatCurrency(capital);
+        monthlyDisplay.textContent = formatCurrency(monthly);
+        rateDisplay.textContent = `${rate} %`;
+        durationDisplay.textContent = `${duration} an${duration > 1 ? 's' : ''}`;
+
+        // Calculate projection
+        const result = calculateProjection(capital, monthly, rate, duration);
+
+        // Update summary cards
+        finalCapitalEl.textContent = formatCurrency(result.finalCapital);
+        totalInvestedEl.textContent = formatCurrency(result.totalInvested);
+        interestEarnedEl.textContent = formatCurrency(result.interests);
+
+        // Update chart
+        updateChart(result);
+
+        // Update table
+        updateTable(result.tableRows);
+    }
+
+    function updateChart(result) {
+        if (projectionChart) {
+            projectionChart.destroy();
+        }
+
+        const ctx = document.getElementById('projectionChart').getContext('2d');
+
+        // Create gradient for capital line
+        const capitalGradient = ctx.createLinearGradient(0, 0, 0, 350);
+        capitalGradient.addColorStop(0, 'rgba(34, 197, 94, 0.3)');
+        capitalGradient.addColorStop(1, 'rgba(34, 197, 94, 0)');
+
+        const investedGradient = ctx.createLinearGradient(0, 0, 0, 350);
+        investedGradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+        investedGradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+        projectionChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: result.labels,
+                datasets: [
+                    {
+                        label: 'Capital Total',
+                        data: result.capitalData,
+                        borderColor: '#22c55e',
+                        backgroundColor: capitalGradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#22c55e',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2
+                    },
+                    {
+                        label: 'Total Investi',
+                        data: result.investedData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: investedGradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#3b82f6',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(16, 25, 34, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: 'rgba(255,255,255,0.8)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        cornerRadius: 12,
+                        padding: 12,
+                        displayColors: true,
+                        callbacks: {
+                            label: function (context) {
+                                return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        grid: {
+                            color: 'rgba(255,255,255,0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: 'rgba(255,255,255,0.5)',
+                            font: { size: 11 }
+                        }
+                    },
+                    y: {
+                        display: true,
+                        grid: {
+                            color: 'rgba(255,255,255,0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: 'rgba(255,255,255,0.5)',
+                            font: { size: 11 },
+                            callback: function (value) {
+                                if (value >= 1000000) {
+                                    return (value / 1000000).toFixed(1) + 'M €';
+                                } else if (value >= 1000) {
+                                    return (value / 1000).toFixed(0) + 'k €';
+                                }
+                                return value + ' €';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function updateTable(rows) {
+        // Show only every 5 years for long durations, or every year for short
+        const step = rows.length > 10 ? 5 : 1;
+        const filteredRows = rows.filter((row, index) =>
+            index % step === 0 || index === rows.length - 1
+        );
+
+        detailsTable.innerHTML = filteredRows.map(row => `
+        <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+            <td class="py-3 px-2 font-medium text-white">Année ${row.year}</td>
+            <td class="py-3 px-2 text-right font-semibold text-white">${formatCurrency(row.capital)}</td>
+            <td class="py-3 px-2 text-right text-blue-400">${formatCurrency(row.invested)}</td>
+            <td class="py-3 px-2 text-right text-green-400">${formatCurrency(row.interests)}</td>
+            <td class="py-3 px-2 text-right">
+                <span class="px-2 py-1 rounded-full text-xs font-medium ${row.growth >= 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
+                    ${row.growth >= 0 ? '+' : ''}${row.growth.toFixed(1)}%
+                </span>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    // Event listeners
+    capitalSlider.addEventListener('input', updateSimulation);
+    monthlySlider.addEventListener('input', updateSimulation);
+    rateSlider.addEventListener('input', updateSimulation);
+    durationSlider.addEventListener('input', updateSimulation);
+
+    // Initial calculation
+    updateSimulation();
+</script>
+
+<style>
+    /* Custom slider styles */
+    input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+        height: 8px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        margin-top: -6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.15s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+    }
+
+    input[type="range"]::-moz-range-track {
+        height: 8px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    #capitalSlider::-webkit-slider-thumb {
+        background: #2b8cee;
+    }
+
+    #monthlySlider::-webkit-slider-thumb {
+        background: #22c55e;
+    }
+
+    #rateSlider::-webkit-slider-thumb {
+        background: #a855f7;
+    }
+
+    #durationSlider::-webkit-slider-thumb {
+        background: #f97316;
+    }
+
+    #capitalSlider::-moz-range-thumb {
+        background: #2b8cee;
+    }
+
+    #monthlySlider::-moz-range-thumb {
+        background: #22c55e;
+    }
+
+    #rateSlider::-moz-range-thumb {
+        background: #a855f7;
+    }
+
+    #durationSlider::-moz-range-thumb {
+        background: #f97316;
+    }
+</style>
+{% endblock %}

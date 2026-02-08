@@ -475,6 +475,10 @@ def settings(request):
     return render(request, 'portfolio/settings.html')
 
 @login_required
+def simulator(request):
+    return render(request, 'portfolio/simulator.html')
+
+@login_required
 def market_asset_detail(request, ticker):
     from .services import fetch_asset_details
     import json
