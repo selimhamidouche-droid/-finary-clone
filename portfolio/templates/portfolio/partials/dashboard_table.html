@@ -1,58 +1,73 @@
 <div id="assets-table" class="overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-        <thead class="bg-gray-50 dark:bg-dark-900/50">
+    <table class="min-w-full divide-y divide-white/10">
+        <thead class="bg-white/5">
             <tr>
-                <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-white/50 uppercase tracking-wider">
                     Actif</th>
-                <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-white/50 uppercase tracking-wider">
                     Catégorie</th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-white/50 uppercase tracking-wider">
                     Quantité</th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Prix Actuel</th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Valeur Totale</th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-white/50 uppercase tracking-wider">
+                    Prix</th>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-white/50 uppercase tracking-wider">
+                    Valeur</th>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-white/50 uppercase tracking-wider">
                     P&L</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-800/50">
+        <tbody class="divide-y divide-white/5">
             {% for category, items in holdings_by_category.items %}
             {% for item in items %}
-            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+            <tr class="hover:bg-white/5 transition-colors group">
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
+                    <div class="flex items-center gap-3">
                         <div
-                            class="flex-shrink-0 h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-300">
+                            class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-sm font-bold text-white">
                             {{ item.holding.asset.ticker|slice:":2" }}
                         </div>
-                        <div class="ml-4">
-                            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ item.holding.asset.name }}
-                            </div>
-                            <div class="text-xs text-gray-500">{{ item.holding.asset.ticker }}</div>
+                        <div>
+                            <div class="text-sm font-semibold text-white">{{ item.holding.asset.name }}</div>
+                            <div class="text-xs text-white/50 font-mono">{{ item.holding.asset.ticker }}</div>
                         </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if category == 'Action' %}bg-blue-900/30 text-blue-400{% elif category == 'Crypto' %}bg-orange-900/30 text-orange-400{% else %}bg-gray-700 text-gray-300{% endif %}">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold border
+                        {% if category == 'Action' %}bg-primary/20 text-primary border-primary/30
+                        {% elif category == 'Crypto' %}bg-purple-500/20 text-purple-400 border-purple-400/30
+                        {% else %}bg-white/10 text-white/70 border-white/20{% endif %}">
                         {{ category }}
                     </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600 dark:text-gray-300">{{ item.holding.quantity  }}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600 dark:text-gray-300">{{ item.current_price|floatformat:2  }} €</td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-gray-900 dark:text-white">{{ item.current_value|floatformat:2  }} €</td>
-                <td
-                    class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium {% if item.pnl >= 0 %}text-green-400{% else %}text-red-400{% endif %}">
-                    {% if item.pnl > 0 %}+{% endif %}{{ item.pnl|floatformat:2 }} €
-                    <span class="text-xs opacity-75">({{ item.pnl_percent|floatformat:2 }}%)</span>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-white/70">{{ item.holding.quantity }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-white">{{
+                    item.current_price|floatformat:2 }} €</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-white">{{
+                    item.current_value|floatformat:2 }} €</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                    <div class="flex flex-col items-end">
+                        <span
+                            class="text-sm font-bold {% if item.pnl >= 0 %}text-emerald-400{% else %}text-red-400{% endif %}">
+                            {% if item.pnl > 0 %}+{% endif %}{{ item.pnl|floatformat:2 }} €
+                        </span>
+                        <span
+                            class="text-xs {% if item.pnl >= 0 %}text-emerald-400/70{% else %}text-red-400/70{% endif %}">
+                            {{ item.pnl_percent|floatformat:2 }}%
+                        </span>
+                    </div>
                 </td>
             </tr>
             {% endfor %}
             {% empty %}
             <tr>
-                <td colspan="6" class="px-6 py-8 text-center text-gray-500 text-sm">
-                    Aucun actif pour le moment. Commencez par ajouter un portefeuille.
+                <td colspan="6" class="px-6 py-16 text-center">
+                    <div class="flex flex-col items-center justify-center">
+                        <span class="material-symbols-outlined text-5xl text-white/20 mb-4">savings</span>
+                        <p class="text-white/50 text-lg font-medium">Aucun actif</p>
+                        <p class="text-white/30 text-sm">Commencez par ajouter un portefeuille.</p>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

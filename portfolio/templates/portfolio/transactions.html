@@ -1,127 +1,118 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="space-y-8 animate-fade-in">
-    <div class="flex justify-between items-start">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Transactions</h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">Historique et Webhook (automatisations).</p>
-        </div>
-        <button onclick="document.getElementById('addTransactionModal').classList.remove('hidden')"
-            class="btn-premium bg-gold hover:bg-yellow-400 text-black px-5 py-2.5 rounded-xl font-bold transition-colors shadow-lg shadow-gold/20">
-            + Ajouter
-        </button>
+<!-- Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-fade-in-up">
+    <div>
+        <h2 class="text-3xl md:text-4xl font-black tracking-tight text-white drop-shadow-sm">Transactions</h2>
+        <p class="text-white/60 mt-1 font-light">Historique et automatisations webhook.</p>
     </div>
+    <button onclick="document.getElementById('addTransactionModal').classList.remove('hidden')"
+        class="bg-primary hover:bg-blue-600 text-white px-5 py-2.5 rounded-full font-bold transition-all shadow-lg shadow-primary/30 flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg">add</span>
+        Ajouter
+    </button>
+</div>
 
-    <!-- Webhook Info Box -->
-    <div
-        class="glass-card dark:glass-card rounded-2xl p-6 border border-gray-200 dark:border-gray-800/50 shadow-xl animate-fade-in-up stagger-1">
-        <h3 class="text-gray-900 dark:text-white font-bold mb-2 flex items-center gap-2">
-            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
-                </path>
-            </svg>
-            Automatisation (n8n / Raccourcis iOS)
-        </h3>
-        <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Envoyez des requêtes POST à cette URL pour ajouter des
-            transactions
-            automatiquement:</p>
-        <div
-            class="bg-gray-100 dark:bg-[#050505] p-4 rounded-lg border border-gray-200 dark:border-gray-800 group relative">
-            <code
-                class="text-green-400 text-xs font-mono block mb-2 break-all">https://{{ request.get_host }}/api/webhook/transaction/</code>
-            <p class="text-gray-500 text-xs font-mono">Payload JSON requis:</p>
-            <pre class="text-gray-400 text-xs font-mono mt-1 overflow-x-auto">
+<!-- Webhook Info Box -->
+<div class="glass-card rounded-[2rem] p-6 animate-fade-in-up stagger-1">
+    <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-purple-400">bolt</span>
+        </div>
+        <div>
+            <h3 class="text-white font-bold">Automatisation</h3>
+            <p class="text-white/50 text-xs">n8n / Raccourcis iOS</p>
+        </div>
+    </div>
+    <p class="text-white/60 text-sm mb-4">Envoyez des requêtes POST à cette URL pour ajouter des transactions
+        automatiquement :</p>
+    <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+        <code
+            class="text-emerald-400 text-xs font-mono block mb-2 break-all">https://{{ request.get_host }}/api/webhook/transaction/</code>
+        <p class="text-white/40 text-xs font-mono">Payload JSON :</p>
+        <pre class="text-white/60 text-xs font-mono mt-1 overflow-x-auto">
 {
   "montant": 25.50,
   "commercant": "McDonalds",
   "date": "2026-01-04"
 }</pre>
-        </div>
-    </div>
-
-    <div
-        class="glass-card dark:glass-card rounded-2xl border border-gray-200 dark:border-gray-800/50 shadow-xl overflow-hidden animate-fade-in-up stagger-2">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
-                <thead class="bg-gray-50 dark:bg-dark-900/50">
-                    <tr>
-                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
-                        </th>
-                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type
-                        </th>
-                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Catégorie</th>
-                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Description</th>
-                        <th class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Montant</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-800/50">
-                    {% for t in transactions %}
-                    <tr class="table-row-glow hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ t.date|date:"d M Y" }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                {% if t.type == 'INCOME' or t.type == 'DEPOSIT' %}bg-green-900/30 text-green-400{% else %}bg-orange-900/30 text-orange-400{% endif %}">
-                                {{ t.get_type_display }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ t.category }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ t.description }}</td>
-                        <td
-                            class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold {% if t.type == 'INCOME' or t.type == 'DEPOSIT' %}text-green-600 dark:text-green-400{% else %}text-gray-900 dark:text-white{% endif %}">
-                            {{ t.amount }} €
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-gray-500 text-sm">
-                            <div class="flex flex-col items-center justify-center">
-                                <svg class="w-12 h-12 text-gray-700 mb-4" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                                    </path>
-                                </svg>
-                                Aucune transaction pour le moment.
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Transactions Table -->
+<div class="glass-card rounded-[2rem] overflow-hidden animate-fade-in-up stagger-2">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-white/10">
+            <thead class="bg-white/5">
+                <tr>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-white/50 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-white/50 uppercase tracking-wider">Type</th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-white/50 uppercase tracking-wider">Catégorie
+                    </th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-white/50 uppercase tracking-wider">Description
+                    </th>
+                    <th class="px-6 py-4 text-right text-xs font-bold text-white/50 uppercase tracking-wider">Montant
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+                {% for t in transactions %}
+                <tr class="hover:bg-white/5 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white/60">{{ t.date|date:"d M Y" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span
+                            class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold
+                            {% if t.type == 'INCOME' or t.type == 'DEPOSIT' %}bg-emerald-400/20 text-emerald-400 border border-emerald-400/20{% else %}bg-orange-400/20 text-orange-400 border border-orange-400/20{% endif %}">
+                            {{ t.get_type_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white">{{ t.category }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white/60">{{ t.description }}</td>
+                    <td
+                        class="px-6 py-4 whitespace-nowrap text-right text-sm font-bold 
+                        {% if t.type == 'INCOME' or t.type == 'DEPOSIT' %}text-emerald-400{% else %}text-white{% endif %}">
+                        {{ t.amount }} €
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-16 text-center text-white/50">
+                        <div class="flex flex-col items-center justify-center">
+                            <span class="material-symbols-outlined text-5xl text-white/20 mb-4">receipt_long</span>
+                            <p class="text-lg font-medium">Aucune transaction</p>
+                            <p class="text-sm text-white/40">Commencez par ajouter votre première transaction.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Transaction Modal -->
 <div id="addTransactionModal"
     class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-    <div onclick="event.stopPropagation()"
-        class="glass-card dark:glass-card p-8 rounded-2xl w-full max-w-md border border-gray-200 dark:border-gray-700 shadow-2xl relative animate-fade-in-scale">
+    <div onclick="event.stopPropagation()" class="glass-panel p-8 rounded-[2rem] w-full max-w-md shadow-2xl relative">
         <button onclick="document.getElementById('addTransactionModal').classList.add('hidden')"
-            class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+            class="absolute top-4 right-4 text-white/50 hover:text-white transition-colors w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center">
+            <span class="material-symbols-outlined">close</span>
         </button>
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Nouvelle Transaction</h2>
+        <h2 class="text-2xl font-bold text-white mb-6">Nouvelle Transaction</h2>
         <form action="{% url 'portfolio:transaction_create' %}" method="POST" class="space-y-4">
             {% csrf_token %}
             <div>
-                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Montant (€)</label>
+                <label class="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2">Montant (€)</label>
                 <input type="number" step="0.01" name="amount" required
-                    class="w-full bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-3 text-gray-900 dark:text-white focus:outline-none focus:border-gold transition-colors text-lg font-bold">
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary focus:bg-white/10 transition-all text-lg font-bold placeholder-white/30"
+                    placeholder="0.00">
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1">Type</label>
+                    <label class="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2">Type</label>
                     <select name="type"
-                        class="w-full bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:border-gold focus:outline-none text-sm h-[42px]">
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all text-sm">
                         <option value="EXPENSE">Dépense</option>
                         <option value="INCOME">Revenu</option>
                         <option value="DEPOSIT">Dépôt</option>
@@ -129,29 +120,30 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Date</label>
+                    <label class="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2">Date</label>
                     <input type="date" name="date"
-                        class="w-full bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:border-gold focus:outline-none text-sm h-[42px]">
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all text-sm">
                 </div>
             </div>
             <div>
-                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Catégorie</label>
+                <label class="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2">Catégorie</label>
                 <input type="text" name="category" placeholder="ex: Alimentation"
-                    class="w-full bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:border-gold focus:outline-none">
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all placeholder-white/30">
             </div>
             <div>
-                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Description</label>
+                <label class="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2">Description</label>
                 <input type="text" name="description" placeholder="Optionnel"
-                    class="w-full bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:border-gold focus:outline-none">
+                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all placeholder-white/30">
             </div>
             <button type="submit"
-                class="btn-premium w-full bg-gold hover:bg-yellow-400 text-black font-bold py-3.5 rounded-xl transition-colors mt-6 shadow-lg shadow-gold/20">Enregistrer</button>
+                class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-3.5 rounded-full transition-all shadow-lg shadow-primary/30 mt-6">
+                Enregistrer
+            </button>
         </form>
     </div>
 </div>
 
 <script>
-    // Close modal on click outside
     document.getElementById('addTransactionModal').addEventListener('click', function (e) {
         if (e.target === this) {
             this.classList.add('hidden');
