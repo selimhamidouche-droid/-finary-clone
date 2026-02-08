@@ -1,88 +1,91 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}WealthGravity{% endblock %}</title>
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        dark: {
-                            900: '#0a0b0d', // Main background
-                            800: '#1a1b1e', // Card background
-                            700: '#25262b', // Hover background
-                        },
+                        "primary": "#2b8cee",
+                        "background-dark": "#101922",
                         gold: '#ffcc80',
-                        brand: {
-                            green: '#4caf50',
-                            red: '#f44336',
-                        }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
+                        display: ['Inter', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        DEFAULT: '1rem',
+                        lg: '2rem',
+                        xl: '3rem',
+                        full: '9999px'
+                    },
                 }
             }
         }
     </script>
-    <script>
-        // Check for saved theme preference, otherwise default to dark
-        if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-            // Defaulting to dark if no preference, but respecting explicit light preference
-            // Actually, for this specific request "even if system is dark", we prioritize manual toggle.
-            // Let's default to dark unless explicitly light.
-            if (localStorage.theme === 'light') {
-                document.documentElement.classList.remove('dark')
-            } else {
-                document.documentElement.classList.add('dark')
-            }
-        } else {
-            document.documentElement.classList.add('dark')
-        }
-
-        function toggleTheme() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.theme = 'light';
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
-            }
-        }
-    </script>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/django-header.js"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* === ROOT VARIABLES === */
-        :root {
-            --color-gold: #ffcc80;
-            --color-gold-light: #ffe0b2;
-            --color-gold-dark: #ffa726;
-            --color-dark-900: #050505;
-            --color-dark-800: #0a0b0d;
-            --color-dark-700: #1a1b1e;
-            --color-dark-600: #25262b;
-            --glow-gold: 0 0 40px -10px rgba(255, 204, 128, 0.4);
-            --glow-blue: 0 0 40px -10px rgba(59, 130, 246, 0.3);
-            --glow-green: 0 0 40px -10px rgba(34, 197, 94, 0.3);
+        /* === GLASSMORPHISM UTILITIES === */
+        .glass-panel {
+            background: rgba(16, 25, 34, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
-        /* === SCROLLBAR === */
+        .glass-sidebar-item {
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .glass-sidebar-item:hover, .glass-sidebar-item.active {
+            background: rgba(43, 140, 238, 0.3);
+            box-shadow: 0 0 15px rgba(43, 140, 238, 0.2);
+            border: 1px solid rgba(43, 140, 238, 0.4);
+        }
+
+        /* === VIBRANT BACKGROUND === */
+        .vibrant-bg {
+            background: linear-gradient(-45deg, #101922, #3b0764, #1e3a8a, #be185d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* === CUSTOM SCROLLBAR === */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -93,557 +96,154 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #3c3d42 0%, #25262b 100%);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #4a4b50 0%, #3c3d42 100%);
-        }
-
-        /* === GLASSMORPHISM CARDS === */
-        .glass-card {
-            background: rgba(26, 27, 30, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .glass-card-light {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        /* === GLOW EFFECTS === */
-        .glow-gold {
-            box-shadow: var(--glow-gold);
-        }
-
-        .glow-gold-hover:hover {
-            box-shadow: 0 0 60px -5px rgba(255, 204, 128, 0.5);
-        }
-
-        .glow-border {
-            position: relative;
-        }
-
-        .glow-border::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: inherit;
-            background: linear-gradient(135deg, rgba(255, 204, 128, 0.3) 0%, transparent 50%, rgba(255, 204, 128, 0.1) 100%);
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .glow-border:hover::before {
-            opacity: 1;
-        }
-
-        /* === SIDEBAR === */
-        .sidebar-link {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .sidebar-link::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 204, 128, 0.05), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.5s ease;
-        }
-
-        .sidebar-link:hover::before {
-            transform: translateX(100%);
-        }
-
-        .sidebar-link.active {
-            background: linear-gradient(90deg, rgba(255, 204, 128, 0.1) 0%, transparent 100%);
-            color: #ffcc80;
-            border-left: 3px solid #ffcc80;
-            border-right: none;
-        }
-
-        .sidebar-link.active::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 60%;
-            background: #ffcc80;
-            box-shadow: 0 0 15px rgba(255, 204, 128, 0.6);
-            border-radius: 0 2px 2px 0;
+            background: rgba(255, 255, 255, 0.3);
         }
 
         /* === ANIMATIONS === */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes pulse-glow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(255, 204, 128, 0.3);
-            }
-
-            50% {
-                box-shadow: 0 0 40px rgba(255, 204, 128, 0.5);
-            }
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-
-            100% {
-                background-position: 200% 0;
-            }
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes countUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .animate-fade-in-up {
-            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeInUp 0.5s ease-out forwards;
         }
 
-        .animate-fade-in-scale {
-            animation: fadeInScale 0.4s ease-out forwards;
-        }
-
-        .animate-slide-in-left {
-            animation: slideInLeft 0.5s ease-out forwards;
-        }
-
-        .animate-pulse-glow {
-            animation: pulse-glow 2s ease-in-out infinite;
-        }
-
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
-        }
-
-        /* Staggered animations */
-        .stagger-1 {
-            animation-delay: 0.1s;
-            opacity: 0;
-        }
-
-        .stagger-2 {
-            animation-delay: 0.2s;
-            opacity: 0;
-        }
-
-        .stagger-3 {
-            animation-delay: 0.3s;
-            opacity: 0;
-        }
-
-        .stagger-4 {
-            animation-delay: 0.4s;
-            opacity: 0;
-        }
-
-        .stagger-5 {
-            animation-delay: 0.5s;
-            opacity: 0;
-        }
-
-        /* === SHIMMER LOADER === */
-        .shimmer {
-            background: linear-gradient(90deg,
-                    rgba(255, 255, 255, 0) 0%,
-                    rgba(255, 255, 255, 0.05) 50%,
-                    rgba(255, 255, 255, 0) 100%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        /* === SCROLL ANIMATION === */
-        @keyframes scroll {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
-            position: relative;
-        }
-
-        .marquee-content {
-            display: inline-block;
-            animation: scroll 40s linear infinite;
-        }
-
-        .marquee-content:hover {
-            animation-play-state: paused;
-        }
+        .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+        .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+        .stagger-3 { animation-delay: 0.3s; opacity: 0; }
+        .stagger-4 { animation-delay: 0.4s; opacity: 0; }
 
         /* === HTMX LOADING === */
         .htmx-request {
             opacity: 0.6;
             cursor: wait;
             pointer-events: none;
-            transition: opacity 0.2s ease;
         }
 
-        /* === PREMIUM BUTTONS === */
-        .btn-premium {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Hide scrollbar */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
         }
-
-        .btn-premium::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .btn-premium:hover::before {
-            transform: translateX(100%);
-        }
-
-        .btn-premium:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px -10px rgba(255, 204, 128, 0.5);
-        }
-
-        .btn-premium:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        /* === CARDS HOVER === */
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
-        }
-
-        /* === TABLE ROW GLOW === */
-        .table-row-glow:hover {
-            background: linear-gradient(90deg, rgba(255, 204, 128, 0.05) 0%, transparent 100%);
-        }
-
-        /* === PROGRESS BARS === */
-        .progress-animated {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-animated::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        /* === NUMBER COUNTER === */
-        .count-up {
-            animation: countUp 0.8s ease-out forwards;
-        }
-
-        /* === TOOLTIP === */
-        .tooltip {
-            position: relative;
-        }
-
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%) translateY(-5px);
-            padding: 6px 12px;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            font-size: 12px;
-            border-radius: 6px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s ease;
-        }
-
-        .tooltip:hover::after {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(-8px);
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
 
-<body
-    class="bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 antialiased h-screen flex overflow-hidden selection:bg-gold selection:text-black"
+<body class="font-display text-white vibrant-bg min-h-screen flex items-center justify-center p-4 md:p-8"
     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
-    <!-- Sidebar -->
-    <aside
-        class="w-72 bg-white dark:bg-[#0a0b0d] border-r border-gray-200 dark:border-gray-800/50 hidden md:flex flex-col z-20 shadow-xl transition-colors duration-300">
-        <!-- Logo -->
-        <div class="h-24 flex items-center px-8">
-            <div class="flex items-center gap-3 text-gold font-bold text-2xl tracking-tight group cursor-pointer">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-gold blur-lg opacity-20 group-hover:opacity-40 transition-opacity">
-                    </div>
-                    <svg class="w-8 h-8 relative z-10 transform group-hover:rotate-12 transition-transform duration-500"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
+    <!-- Main Glass Container -->
+    <div class="glass-panel w-full max-w-[1600px] h-[95vh] rounded-[2.5rem] flex overflow-hidden shadow-2xl relative">
+        
+        <!-- Decorative glowing orbs -->
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/30 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <!-- Sidebar -->
+        <aside class="hidden md:flex flex-col w-72 h-full border-r border-white/5 relative z-10 p-6">
+            
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-8 px-2">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-lg shadow-primary/30">
+                    <span class="material-symbols-outlined text-white text-xl">bolt</span>
                 </div>
-                <span
-                    class="bg-clip-text text-transparent bg-gradient-to-r from-yellow-600 to-yellow-500 dark:from-gold dark:to-yellow-200">WealthGravity</span>
+                <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">WealthGravity</span>
             </div>
-        </div>
 
-        <!-- Navigation -->
-        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <p class="px-4 text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Menu Principal</p>
+            <!-- Navigation -->
+            <nav class="flex flex-col gap-2 flex-1">
+                <p class="px-4 text-xs font-bold text-white/40 uppercase tracking-widest mb-2">Menu Principal</p>
+                
+                <a href="{% url 'portfolio:dashboard' %}"
+                    class="glass-sidebar-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
+                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">dashboard</span>
+                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Tableau de bord</span>
+                </a>
+                
+                <a href="{% url 'portfolio:portfolio_list' %}"
+                    class="glass-sidebar-item {% if request.resolver_match.url_name == 'portfolio_list' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
+                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">account_balance_wallet</span>
+                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Portefeuilles</span>
+                </a>
+                
+                <a href="{% url 'portfolio:asset_list' %}"
+                    class="glass-sidebar-item {% if request.resolver_match.url_name == 'asset_list' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
+                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">trending_up</span>
+                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Actifs & Marchés</span>
+                </a>
+                
+                <a href="{% url 'portfolio:transactions' %}"
+                    class="glass-sidebar-item {% if request.resolver_match.url_name == 'transactions' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
+                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">receipt_long</span>
+                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Transactions</span>
+                </a>
 
-            <a href="{% url 'portfolio:dashboard' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                    </path>
-                </svg>
-                Tableau de bord
-            </a>
-            <a href="{% url 'portfolio:portfolio_list' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'portfolio_list' %}active{% endif %}">
-                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                    </path>
-                </svg>
-                Portefeuilles
-            </a>
-            <a href="{% url 'portfolio:asset_list' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'asset_list' %}active{% endif %}">
-                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                </svg>
-                Actifs & Marchés
-            </a>
-            <a href="{% url 'portfolio:transactions' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'transactions' %}active{% endif %}">
-                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                    </path>
-                </svg>
-                Transactions
-            </a>
+                <p class="px-4 text-xs font-bold text-white/40 uppercase tracking-widest mt-6 mb-2">Analyse</p>
+                
+                <a href="{% url 'portfolio:insights' %}"
+                    class="glass-sidebar-item {% if request.resolver_match.url_name == 'insights' %}active{% endif %} flex items-center gap-4 px-4 py-3 rounded-xl group">
+                    <span class="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">insights</span>
+                    <span class="text-sm font-medium text-white/70 group-hover:text-white transition-colors">Insights</span>
+                </a>
+            </nav>
 
-            <p class="px-4 text-xs font-bold text-gray-500 uppercase tracking-widest mt-8 mb-4">Analyse</p>
-            <a href="{% url 'portfolio:insights' %}"
-                class="sidebar-link flex items-center gap-4 px-4 py-4 text-sm font-medium rounded-xl text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-dark-800 transition-all duration-200 group {% if request.resolver_match.url_name == 'insights' %}active{% endif %}">
-                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                    </path>
-                </svg>
-                Insights
-            </a>
-        </nav>
+            <!-- Bottom Section -->
+            <div class="mt-auto">
+                <!-- Premium Card -->
+                <div class="glass-card p-4 rounded-2xl mb-4 bg-gradient-to-br from-primary/20 to-purple-500/20 border-white/10">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-yellow-300 text-xl">stars</span>
+                        <p class="text-xs font-bold text-white uppercase tracking-wider">Premium</p>
+                    </div>
+                    <p class="text-xs text-white/70 mb-3">Débloquez toutes les fonctionnalités avancées.</p>
+                    <button class="w-full py-2 bg-primary hover:bg-blue-600 text-white text-xs font-bold rounded-full transition-colors shadow-lg shadow-blue-500/30">
+                        Passer à Premium
+                    </button>
+                </div>
 
-        <!-- Use Profile -->
-        <div
-            class="p-6 bg-white dark:bg-[#0F1012] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
-            <!-- Theme Toggle -->
-            <button onclick="toggleTheme()"
-                class="w-full mb-4 flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors cursor-pointer group text-gray-600 dark:text-gray-400">
-                <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
-                    </path>
-                </svg>
-                <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
-                    </path>
-                </svg>
-                <span class="text-sm font-medium">Mode <span class="hidden dark:inline">Clair</span><span
-                        class="inline dark:hidden">Sombre</span></span>
-            </button>
-            <a href="{% url 'portfolio:settings' %}"
-                class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-dark-800 transition-colors cursor-pointer group">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold to-orange-500 p-[2px]">
-                    <div
-                        class="w-full h-full rounded-full bg-gray-100 dark:bg-dark-900 flex items-center justify-center text-gold font-bold text-sm">
+                <!-- User Profile -->
+                <a href="{% url 'portfolio:settings' %}"
+                    class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold text-sm border-2 border-white/20">
+                            {{ user.username|first|upper }}
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-[#101922] rounded-full"></div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-sm font-semibold truncate">{{ user.username }}</p>
+                        <p class="text-white/50 text-xs">Connecté</p>
+                    </div>
+                    <span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors">settings</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col h-full overflow-y-auto relative z-10 scrollbar-hide">
+            
+            <!-- Mobile Header -->
+            <header class="flex md:hidden items-center justify-between p-6 pb-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold text-sm">
                         {{ user.username|first|upper }}
                     </div>
+                    <span class="font-bold">{{ user.username }}</span>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <div class="text-gray-900 dark:text-white font-medium truncate">{{ user.username }}</div>
-                    <div class="text-xs text-green-400 flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                        Connecté
-                    </div>
-                </div>
-        </div>
-        <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-            </path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
-            </path>
-        </svg>
-        </a>
-        </div>
-    </aside>
+                <button class="p-2 glass-card rounded-full text-white">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+            </header>
 
-    <!-- Main Content Wrapper -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        <!-- Market Marquee -->
-        <div
-            class="h-10 bg-white dark:bg-[#0a0b0d] border-b border-gray-200 dark:border-gray-800 flex items-center z-20 transition-colors duration-300">
-            <div class="marquee-container w-full flex items-center">
-                <div class="marquee-content flex gap-8 items-center text-xs font-mono font-medium tracking-wide px-4">
-                    <!-- Duplicate items for seamless loop -->
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-yellow-600 dark:text-gold">BTC/USD</span>
-                        $45,721.00 <span class="text-green-600 dark:text-green-500">+2.4%</span></span>
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-blue-600 dark:text-blue-400">ETH/USD</span>
-                        $2,430.50 <span class="text-green-600 dark:text-green-500">+1.1%</span></span>
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-gray-900 dark:text-white">S&P 500</span> 4,780.20
-                        <span class="text-red-500 dark:text-red-400">-0.3%</span></span>
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-yellow-600 dark:text-yellow-400">GOLD</span>
-                        $2,045.30 <span class="text-green-600 dark:text-green-500">+0.5%</span></span>
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-gray-500 dark:text-gray-300">EUR/USD</span>
-                        1.0950 <span class="text-gray-400 dark:text-gray-500">0.0%</span></span>
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-purple-600 dark:text-purple-400">SOL/USD</span>
-                        $98.40 <span class="text-green-600 dark:text-green-500">+5.2%</span></span>
-                    <!-- Repeat -->
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-yellow-600 dark:text-gold">BTC/USD</span>
-                        $45,721.00 <span class="text-green-600 dark:text-green-500">+2.4%</span></span>
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-blue-600 dark:text-blue-400">ETH/USD</span>
-                        $2,430.50 <span class="text-green-600 dark:text-green-500">+1.1%</span></span>
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-gray-900 dark:text-white">S&P 500</span> 4,780.20
-                        <span class="text-red-500 dark:text-red-400">-0.3%</span></span>
-                    <span class="flex items-center gap-2 text-gray-600 dark:text-gray-400"><span
-                            class="text-yellow-600 dark:text-yellow-400">GOLD</span>
-                        $2,045.30 <span class="text-green-600 dark:text-green-500">+0.5%</span></span>
-                </div>
-            </div>
-        </div>
-
-        <main
-            class="flex-1 overflow-y-auto bg-gray-50 dark:bg-[#050505] p-4 md:p-8 scroll-smooth relative transition-colors duration-300">
-            <!-- Background Glows -->
-            <div
-                class="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-gray-100 dark:from-[#1a1b1e] to-transparent pointer-events-none opacity-50">
-            </div>
-            <div class="relative z-10 max-w-7xl mx-auto animate-fade-in">
+            <div class="p-6 md:p-10 flex flex-col gap-8">
                 {% block content %}{% endblock %}
             </div>
         </main>
